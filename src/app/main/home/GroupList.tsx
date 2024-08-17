@@ -4,13 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { List, Card, Avatar, FAB } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/app/main/types";
+import type { Group } from "@/lib/schema/group";
 
-type GroupData = {
-  id: number;
-  name: string;
-};
-
-const DATA: GroupData[] = [
+const DATA: Group[] = [
   {
     id: 1,
     name: "Friends",
@@ -26,7 +22,7 @@ const DATA: GroupData[] = [
 ];
 
 type GroupCardProps = {
-  item: GroupData;
+  item: Group;
   onPress: () => void;
 };
 
@@ -47,7 +43,7 @@ type GroupListProps = {
 export const GroupList = ({ navigation }: GroupListProps) => {
   const [selectedId, setSelectedId] = useState<number>();
 
-  const renderItem = ({ item }: { item: GroupData }) => {
+  const renderItem = ({ item }: { item: Group }) => {
     const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
     const color = item.id === selectedId ? "white" : "black";
 
