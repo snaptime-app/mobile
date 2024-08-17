@@ -1,4 +1,4 @@
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 type Session = string | null;
 
@@ -9,7 +9,7 @@ export async function getSession(): Promise<Session> {
     return session;
   }
 
-  session = await SecureStore.getItemAsync("session")
+  session = await SecureStore.getItemAsync("session");
   return session;
 }
 
@@ -18,6 +18,6 @@ export async function setSession(s: string) {
     return session;
   }
 
-  await SecureStore.setItemAsync("session", s)
+  await SecureStore.setItemAsync("session", s);
   session = s;
 }

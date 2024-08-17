@@ -11,5 +11,5 @@ export function useCreateUserMutation() {
     mutationFn: async (body: CreateUserMutation) => {
       return put("/user", body);
     },
-  })
+  });
 }

@@ -1,4 +1,4 @@
-import { getSession } from './session';
+import { getSession } from "./session";
 
 type Body = object | string;
 
@@ -38,14 +38,14 @@ export async function request(args: RequestArgs) {
 export async function get(path: string, options?: RequestInit) {
   return request({
     path,
-    method: 'GET',
+    method: "GET",
     options,
   });
 }
 
 export async function post(path: string, body: Body, options?: RequestInit) {
   return request({
-    method: 'POST',
+    method: "POST",
     path,
     body,
     options,
@@ -54,7 +54,7 @@ export async function post(path: string, body: Body, options?: RequestInit) {
 
 export async function put(path: string, body: Body, options: RequestInit = {}) {
   return request({
-    method: 'PUT',
+    method: "PUT",
     path,
     body,
     options,
@@ -63,7 +63,7 @@ export async function put(path: string, body: Body, options: RequestInit = {}) {
 
 export async function del(path: string, body: Body, options?: RequestInit) {
   return request({
-    method: 'DELETE',
+    method: "DELETE",
     path,
     body,
     options,

@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
-import { useRoute } from '@react-navigation/native';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Text } from "react-native-paper";
+import { useRoute } from "@react-navigation/native";
 
 export const GroupDetail = () => {
   const route = useRoute();
@@ -19,12 +19,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   details: {
     fontSize: 18,

@@ -1,20 +1,20 @@
-import { registerRootComponent } from 'expo';
-import 'react-native-gesture-handler';
-import { MainLayout } from './main/layout';
-import { NavigationContainer } from '@react-navigation/native';
+import { registerRootComponent } from "expo";
+import "react-native-gesture-handler";
+import { MainLayout } from "./main/layout";
+import { NavigationContainer } from "@react-navigation/native";
 import {
   DarkTheme as NavigationDarkTheme,
   DefaultTheme as NavigationDefaultTheme,
-} from '@react-navigation/native';
+} from "@react-navigation/native";
 import {
   PaperProvider,
   adaptNavigationTheme,
   MD3LightTheme,
   MD3DarkTheme,
-} from 'react-native-paper';
-import { useColorScheme } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+} from "react-native-paper";
+import { useColorScheme } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -43,7 +43,7 @@ const queryClient = new QueryClient();
 function RootLayout() {
   const colorScheme = useColorScheme();
   const theme =
-    colorScheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
+    colorScheme === "dark" ? CombinedDarkTheme : CombinedDefaultTheme;
 
   return (
     <NavigationContainer theme={theme}>
