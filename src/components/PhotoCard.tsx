@@ -7,11 +7,12 @@ type PhotoCardProps = {
   username: string;
   postedTime: string;
   imageUrl: string;
+  onPress: () => void;
 };
 
 const { width: screenWidth } = Dimensions.get('window');
 
-export const PhotoCard = ({ username, postedTime, imageUrl }: PhotoCardProps) => {
+export const PhotoCard = ({ username, postedTime, imageUrl, onPress }: PhotoCardProps) => {
   return (
     <Card style={styles.card} mode='contained'>
       <Card.Content>
@@ -20,7 +21,7 @@ export const PhotoCard = ({ username, postedTime, imageUrl }: PhotoCardProps) =>
       </Card.Content>
       <Card.Cover source={{ uri: imageUrl }} style={styles.image} />
       <Card.Actions style={styles.footer}>
-        <Button mode="contained" style={styles.button}>
+        <Button mode="contained" style={styles.button} onPress={onPress}>
           Attempt
         </Button>
       </Card.Actions>

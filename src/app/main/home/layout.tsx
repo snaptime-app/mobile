@@ -4,12 +4,14 @@ import { GroupList } from "./GroupList";
 import { HeaderBar } from "@/components/HeaderBar";
 import { AddFriend } from "@/app/main/home/AddFriend";
 import { GroupMembersList } from "@/app/main/home/GroupMembers";
+import { AttemptPage } from "@/app/main/home/AttemptPage";
 
 export type RootStackParamList = {
   GroupList: undefined;
   GroupDetail: { groupId: number };
   AddFriend: { groupId: number };
   Members: { groupId: number };
+  AttemptPage: { challengeId: number };
   // Profile: { userId: string };
   // Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -30,10 +32,7 @@ export const HomeNavigator = () => (
         title: "Groups",
       }}
     />
-    <Stack.Screen
-      name="GroupDetail"
-      component={GroupDetail}
-    />
+    <Stack.Screen name="GroupDetail" component={GroupDetail} />
     <Stack.Screen
       name="AddFriend"
       component={AddFriend}
@@ -46,7 +45,14 @@ export const HomeNavigator = () => (
       component={GroupMembersList}
       options={{
         title: "Members",
-    }}
+      }}
+    />
+    <Stack.Screen
+      name="AttemptPage"
+      component={AttemptPage}
+      options={{
+        title: "Attempt Challenge",
+      }}
     />
   </Stack.Navigator>
 );
