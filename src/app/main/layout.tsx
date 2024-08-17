@@ -1,12 +1,15 @@
-import { createStackNavigator } from '@react-navigation/stack';
 import { Home } from './home';
+import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 
-const Stack = createStackNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 export function MainLayout() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Home" component={Home} />
-    </Stack.Navigator>
+    <Tab.Navigator>
+      <Tab.Screen name="Home" component={Home} options={{
+        tabBarIcon: 'home',
+        tabBarLabel: 'Home',
+      }} />
+    </Tab.Navigator>
   );
 }
