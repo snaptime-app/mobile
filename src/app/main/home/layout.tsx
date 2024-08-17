@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Card, Avatar } from "react-native-paper";
+import { List, Card, Avatar, FAB } from "react-native-paper";
 // import { useNavigation } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -35,7 +35,7 @@ type GroupCardProps = {
 };
 
 const GroupCard = ({ item, onPress }: GroupCardProps) => (
-  <Card style={styles.card}>
+  <Card >
     <List.Item
       title={item.name}
       left={(props) => <Avatar.Text {...props} label={item.name.charAt(0)} />}
@@ -64,6 +64,7 @@ export const GroupList = ({navigation} : GroupListProps) => {
           navigation.push("GroupDetail", { groupId: item.id });
         }}
       />
+      
     );
   };
 
@@ -75,6 +76,13 @@ export const GroupList = ({navigation} : GroupListProps) => {
         keyExtractor={(item) => item.id}
         extraData={selectedId}
       />
+      <FAB
+        style={styles.fab}
+        icon="chat"
+        onPress={() => {
+            console.log('FAB pressed');
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -84,8 +92,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  card: {
-    backgroundColor: "white",
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });
 
