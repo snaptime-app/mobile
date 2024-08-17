@@ -1,8 +1,14 @@
 import { registerRootComponent } from 'expo';
-import App from './App';
+import 'react-native-gesture-handler';
+import { MainLayout } from './main/layout';
+import { NavigationContainer } from '@react-navigation/native';
 
 function RootLayout() {
-  return <App />;
+  return (
+    <NavigationContainer>
+      <MainLayout />
+    </NavigationContainer>
+  );
 }
 
 registerRootComponent(RootLayout);
