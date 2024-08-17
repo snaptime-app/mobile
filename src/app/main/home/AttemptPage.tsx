@@ -13,6 +13,7 @@ import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "@/app/main/home/layout";
 import { ChallengeData, sampleChallengeData } from "@/app/main/tempconstants";
 import { useTheme } from "react-native-paper";
+import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type User = {
@@ -39,7 +40,7 @@ const submissionData: Submission[] = [
     isCorrect: true,
     challenge: { id: 101, description: "Challenge 1" },
     createdAt: "4 hours ago",
-    creator: { id: 1, username: "NotJeffery" },
+    creator: { id: 1, username: "NotJeffery (You)" },
   },
   {
     id: 2,
@@ -61,9 +62,10 @@ type AttemptPageProp = RouteProp<RootStackParamList, "AttemptPage">;
 
 type AttemptPageProps = {
   route: AttemptPageProp;
+  navigation: StackNavigationProp<RootStackParamList, "GroupList">;
 };
 
-export const AttemptPage = ({ route }: AttemptPageProps) => {
+export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   const { colors } = useTheme();
   const { challengeId } = route.params;
   const cardData = sampleChallengeData.find((data) => data.id === challengeId);
@@ -121,7 +123,7 @@ export const AttemptPage = ({ route }: AttemptPageProps) => {
         style={styles.fab}
         icon="play"
         label="Attempt"
-        onPress={() => console.log("Pressed")}
+        onPress={() => navigation.push("SubmitPage", { challengeId })}
       />
     </SafeAreaView>
   );
