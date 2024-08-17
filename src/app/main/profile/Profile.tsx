@@ -5,18 +5,16 @@ import { Button, Card, Text } from "react-native-paper";
 
 export function Profile() {
   const { isSuccess, data } = useAuthenticatedUser();
-  let username = "Loading...";
+  let greeting = "Loading...";
 
   if (isSuccess) {
-    username = data.username;
+    greeting = `Hey, ${data.username}!`;
   }
 
   return (
     <View style={styles.container}>
       <Card>
-        <Card.Title
-          title={`Hey, ${username}!`}
-        />
+        <Card.Title title={greeting} />
         <Card.Actions>
           <Button>Settings</Button>
           <Button onPress={() => setSession(null)}>Sign Out</Button>
@@ -30,4 +28,4 @@ const styles = StyleSheet.create({
   container: {
     margin: 30,
   },
-})
+});
