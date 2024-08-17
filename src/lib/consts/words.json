@@ -1,0 +1,26 @@
+{
+  "adjectives": [
+    "Happy",
+    "Sad",
+    "Fast",
+    "Slow",
+    "Clever",
+    "Brave",
+    "Calm",
+    "Eager",
+    "Fancy",
+    "Gentle"
+  ],
+  "nouns": [
+    "Lion",
+    "Tiger",
+    "Bear",
+    "Eagle",
+    "Shark",
+    "Wolf",
+    "Fox",
+    "Panda",
+    "Hawk",
+    "Dolphin"
+  ]
+}

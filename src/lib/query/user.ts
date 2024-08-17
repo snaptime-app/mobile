@@ -1,15 +1,30 @@
-import { useMutation } from "@tanstack/react-query";
-import { put } from "../utils/request";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { get, post } from "@/lib/utils/request";
+import { User, UserCreatePayload } from "@/lib/schema/user";
 
-interface CreateUserMutation {
-  username: string;
-  session: string;
+export function useAuthenticatedUser() {
+  return useQuery({
+    queryKey: ["user"],
+    queryFn: async () => {
+      const user = await get("/user/get");
+      console.log(user);
+      return User.parse(user);
+    },
+    retry: false,
+  });
 }
 
-export function useCreateUserMutation() {
+export function useUserCreate() {
   return useMutation({
-    mutationFn: async (body: CreateUserMutation) => {
-      return put("/user", body);
+    mutationFn: async (body: UserCreatePayload) => {
+      try {
+        await post("/user/create", body);
+      } catch (e) {
+        console.log("hoomge");
+        console.error(e);
+        throw e;
+      }
     },
+    retry: false,
   });
 }
