@@ -14,6 +14,7 @@ import {
 } from 'react-native-paper';
 import { useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
@@ -37,15 +38,20 @@ const CombinedDarkTheme = {
   },
 };
 
+const queryClient = new QueryClient();
+
 function RootLayout() {
   const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
+  const theme =
+    colorScheme === 'dark' ? CombinedDarkTheme : CombinedDefaultTheme;
 
   return (
     <NavigationContainer theme={theme}>
       <PaperProvider theme={theme}>
-        <StatusBar style="auto" />
-        <MainLayout />
+        <QueryClientProvider client={queryClient}>
+          <StatusBar style="auto" />
+          <MainLayout />
+        </QueryClientProvider>
       </PaperProvider>
     </NavigationContainer>
   );

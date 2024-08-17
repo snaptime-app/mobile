@@ -1,10 +1,21 @@
+import { useStatus } from '@/lib/query/status';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 export function Home() {
+  const { isSuccess, isError, data, error } = useStatus();
+
+  let text = 'Loading...';
+  if (isSuccess) {
+    text = data.message;
+  }
+  if (isError) {
+    text = error.message;
+  }
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+      <Text>{text}</Text>
       <Button
         icon="camera"
         mode="contained"
