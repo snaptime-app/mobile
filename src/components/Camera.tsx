@@ -5,15 +5,62 @@ import {
   CameraView,
   useCameraPermissions,
   type CameraCapturedPicture,
-  type CameraViewRef,
 } from "expo-camera";
 import { Image } from "expo-image";
-import { useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 
-export function Camera() {
+export { CameraCapturedPicture };
+export type CameraEventHandler = (picture: CameraCapturedPicture) => void;
+
+interface CameraContextProps {
+  captured: CameraCapturedPicture | null;
+  onCapture: CameraEventHandler;
+}
+const CameraContext = createContext<CameraContextProps | null>(null);
+
+interface CameraProviderProps {
+  children: React.ReactNode;
+  onCapture?: CameraEventHandler;
+}
+
+export function CameraProvider({ children, onCapture }: CameraProviderProps) {
+  const [capturedPicture, setCapturedPicture] =
+    useState<CameraCapturedPicture | null>(null);
+
+  return (
+    <CameraContext.Provider
+      value={{
+        captured: capturedPicture,
+        onCapture: (picture: CameraCapturedPicture) => {
+          setCapturedPicture(picture);
+          if (onCapture) {
+            onCapture(picture);
+          }
+        },
+      }}
+    >
+      {children}
+    </CameraContext.Provider>
+  );
+}
+
+export function useCamera() {
+  const context = useContext(CameraContext);
+  if (!context) {
+    throw new Error("useCamera must be used within a CameraProvider");
+  }
+
+  return context;
+}
+
+interface CameraProps {
+  onCapture?: CameraEventHandler;
+}
+export function Camera({ onCapture: onCaptureFromProp }: CameraProps) {
+  const { onCapture: onCaptureFromContext } = useCamera();
   const theme = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
-  const [pictureUri, setPictureUri] = useState<string | null>(null);
+  const [picture, setPicture] = useState<CameraCapturedPicture | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const camera = useRef<CameraView>(null);
 
@@ -26,11 +73,25 @@ export function Camera() {
       return;
     }
 
-    setPictureUri((await camera.current.takePictureAsync())?.uri ?? null);
+    const captured = await camera.current.takePictureAsync();
+    if (!captured) {
+      return;
+    }
+
+    setPicture(captured);
   }
 
   async function resetPicture() {
-    setPictureUri(null);
+    setPicture(null);
+  }
+
+  async function confirmPicture() {
+    if (picture) {
+      onCaptureFromContext(picture);
+      if (onCaptureFromProp) {
+        onCaptureFromProp(picture);
+      }
+    }
   }
 
   return (
@@ -46,7 +107,7 @@ export function Camera() {
       >
         {permission.granted ? (
           <>
-            {!pictureUri ? (
+            {!picture ? (
               <CameraView
                 style={styles.camera}
                 onCameraReady={() => setIsCameraReady(true)}
@@ -69,12 +130,12 @@ export function Camera() {
               </CameraView>
             ) : (
               <>
-                <Image style={styles.image} source={pictureUri}></Image>
+                <Image style={styles.image} source={picture.uri}></Image>
                 <View style={styles.imageOverlay}>
                   <View style={styles.fabBar}>
                     <FAB
                       style={styles.fab}
-                      onPress={() => console.log("Pressed")}
+                      onPress={confirmPicture}
                       icon="check"
                       key="check"
                       mode="flat"

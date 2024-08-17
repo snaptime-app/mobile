@@ -1,22 +1,40 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import { HeaderBar } from "@/components/HeaderBar";
-import { Camera } from "./Camera";
+import { CameraProvider } from "@/components/Camera";
+import { Take } from "./Take";
+import { Send } from "./Send";
 
-const Stack = createStackNavigator();
+export type StackParamList = {
+  Take: undefined;
+  Send: undefined;
+};
 
-export const UploadNavigator = () => (
-  <Stack.Navigator
-    initialRouteName="Camera"
-    screenOptions={{
-      header: HeaderBar,
-    }}
-  >
-    <Stack.Screen
-      name="Camera"
-      component={Camera}
-      options={{
-        title: "Take a Photo",
-      }}
-    />
-  </Stack.Navigator>
-);
+const Stack = createStackNavigator<StackParamList>();
+
+export function UploadNavigator() {
+  return (
+    <CameraProvider>
+      <Stack.Navigator
+        initialRouteName="Take"
+        screenOptions={{
+          header: HeaderBar,
+        }}
+      >
+        <Stack.Screen
+          name="Take"
+          component={Take}
+          options={{
+            title: "Take a Photo",
+          }}
+        />
+        <Stack.Screen
+          name="Send"
+          component={Send}
+          options={{
+            title: "Send Photo to Friends",
+          }}
+        />
+      </Stack.Navigator>
+    </CameraProvider>
+  );
+}
