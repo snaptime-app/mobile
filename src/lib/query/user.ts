@@ -7,7 +7,6 @@ export function useAuthenticatedUser() {
     queryKey: ["user"],
     queryFn: async () => {
       const user = await get("/user/get");
-      console.log(user);
       return User.parse(user);
     },
     retry: false,
@@ -17,13 +16,7 @@ export function useAuthenticatedUser() {
 export function useUserCreate() {
   return useMutation({
     mutationFn: async (body: UserCreatePayload) => {
-      try {
-        await post("/user/create", body);
-      } catch (e) {
-        console.log("hoomge");
-        console.error(e);
-        throw e;
-      }
+      await post("/user/create", body);
     },
     retry: false,
   });

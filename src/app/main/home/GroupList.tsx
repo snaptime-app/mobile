@@ -1,26 +1,12 @@
 import { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Card, Avatar } from "react-native-paper";
+import { List, Card, Avatar, FAB } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/app/main/home/layout";
 import type { Group } from "@/lib/schema/group";
-
-// eventually get from server
-const data: Group[] = [
-  {
-    id: 1,
-    name: "Friends",
-  },
-  {
-    id: 2,
-    name: "Better Friends",
-  },
-  {
-    id: 3,
-    name: "Goose",
-  },
-];
+import { useAuthenticatedUserGroups } from "@/lib/query/group";
+import { Text } from "react-native-paper";
 
 type GroupCardProps = {
   item: Group;
@@ -43,6 +29,11 @@ type GroupListProps = {
 
 export const GroupList = ({ navigation }: GroupListProps) => {
   const [selectedId, setSelectedId] = useState<number>();
+  const { isSuccess, isError, data, error } = useAuthenticatedUserGroups();
+
+  if (isError) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   const renderItem = ({ item }: { item: Group }) => {
     const backgroundColor = item.id === selectedId ? "#6e3b6e" : "#f9c2ff";
@@ -61,12 +52,25 @@ export const GroupList = ({ navigation }: GroupListProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-        extraData={selectedId}
-        contentContainerStyle={styles.flatList}
+      {!isSuccess ? (
+        null
+      ) : (
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          extraData={selectedId}
+          contentContainerStyle={styles.flatList}
+        />
+      )}
+      <FAB
+        style={styles.fab}
+        icon="message-outline"
+        label="Create Group"
+        mode="flat"
+        onPress={() => {
+          navigation.push("GroupNew");
+        }}
       />
     </SafeAreaView>
   );
@@ -77,6 +81,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 0,
   },
-  flatList: {
-  }
+  flatList: {},
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
 });
