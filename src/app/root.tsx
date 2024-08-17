@@ -42,6 +42,7 @@ const queryClient = new QueryClient();
 
 function RootLayout() {
   const colorScheme = useColorScheme();
+  
   const theme =
     colorScheme === "dark" ? CombinedDarkTheme : CombinedDefaultTheme;
 

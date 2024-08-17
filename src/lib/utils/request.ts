@@ -14,18 +14,21 @@ export async function request(args: RequestArgs) {
   const url = `${process.env.EXPO_PUBLIC_SERVER_URL}${args.path}`;
   const options: RequestInit = {
     method: args.method,
-    headers: session
-      ? {
-          Authorization: `Bearer ${session}`,
-        }
-      : {},
+    headers: {
+      ...(session ? { Authorization: session } : {}),
+      ...(args.body ? { "Content-Type": "application/json" } : {}),
+    },
     body: args.body ? JSON.stringify(args.body) : undefined,
     ...args.options,
   };
 
+  console.log("options", options);
+
   const response = await fetch(url, options);
   if (!response.ok) {
-    throw new Error(response.statusText);
+    throw new Error(
+      `Fetch Error: ${url}, ${response.status}, ${response.statusText}`,
+    );
   }
 
   if (response.status === 204) {

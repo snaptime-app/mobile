@@ -1,15 +1,22 @@
 import { useMutation } from "@tanstack/react-query";
-import { put } from "../utils/request";
+import { post } from "../utils/request";
 
 interface CreateUserMutation {
   username: string;
   session: string;
 }
 
-export function useCreateUserMutation() {
+export function useUserCreateMutation() {
   return useMutation({
     mutationFn: async (body: CreateUserMutation) => {
-      return put("/user", body);
+      try {
+        await post("/user/create", body);
+      } catch (e) {
+        console.log("hoomge");
+        console.error(e);
+        throw e;
+      }
     },
+    retry: false,
   });
 }
