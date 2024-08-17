@@ -3,7 +3,7 @@ import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { List, Card, Avatar, FAB } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "@/app/main/types";
+import { RootStackParamList } from "@/app/main/home/layout";
 import type { Group } from "@/lib/schema/group";
 
 const DATA: Group[] = [
@@ -68,7 +68,8 @@ export const GroupList = ({ navigation }: GroupListProps) => {
       />
       <FAB
         style={styles.fab}
-        icon="chat"
+        icon="message-outline"
+        mode="flat"
         onPress={() => {
           console.log("FAB pressed");
         }}
