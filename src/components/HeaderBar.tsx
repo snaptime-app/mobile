@@ -10,10 +10,15 @@ export function HeaderBar({
   options,
   back,
 }: StackHeaderProps) {
-  const title = getHeaderTitle(options, route.name);
+  const defaultTitle = getHeaderTitle(options, route.name);
   const theme = useTheme();
 
-  const groupId = route.params?.groupId as { groupId: number };
+  const groupId = (route.params as any)?.groupId as number | undefined;
+
+  // Conditionally set the title based on route name
+  const title = route.name === 'GroupDetail' && groupId !== undefined
+    ? `Group ${groupId}`
+    : defaultTitle;
 
   return (
     <Appbar.Header style={[styles.header, {
