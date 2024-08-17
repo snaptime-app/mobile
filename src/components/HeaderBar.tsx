@@ -42,7 +42,7 @@ export function HeaderBar({
           />
           <Appbar.Action
             onPress={() => {
-              console.log('Leaderboard was pressed');
+              navigation.push('Leaderboard', { groupId });
             }}
             icon="trophy"
           />

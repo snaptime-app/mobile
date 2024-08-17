@@ -5,6 +5,7 @@ import { HeaderBar } from "@/components/HeaderBar";
 import { AddFriend } from "@/app/main/home/AddFriend";
 import { GroupMembersList } from "@/app/main/home/GroupMembers";
 import { AttemptPage } from "@/app/main/home/AttemptPage";
+import { Leaderboard } from "@/app/main/home/Leaderboard";
 
 export type RootStackParamList = {
   GroupList: undefined;
@@ -12,6 +13,7 @@ export type RootStackParamList = {
   AddFriend: { groupId: number };
   Members: { groupId: number };
   AttemptPage: { challengeId: number };
+  Leaderboard: { groupId: number };
   // Profile: { userId: string };
   // Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -52,6 +54,13 @@ export const HomeNavigator = () => (
       component={AttemptPage}
       options={{
         title: "Attempt Challenge",
+      }}
+    />
+    <Stack.Screen
+      name="Leaderboard"
+      component={Leaderboard}
+      options={{
+        title: "Leaderboard",
       }}
     />
   </Stack.Navigator>
