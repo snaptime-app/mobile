@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { List, Card, Avatar, FAB } from "react-native-paper";
+import { List, Card, Avatar } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "@/app/main/home/layout";
 import type { Group } from "@/lib/schema/group";
 
-const DATA: Group[] = [
+// eventually get from server
+const data: Group[] = [
   {
     id: 1,
     name: "Friends",
@@ -61,18 +62,11 @@ export const GroupList = ({ navigation }: GroupListProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={DATA}
+        data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         extraData={selectedId}
-      />
-      <FAB
-        style={styles.fab}
-        icon="message-outline"
-        mode="flat"
-        onPress={() => {
-          console.log("FAB pressed");
-        }}
+        contentContainerStyle={styles.flatList}
       />
     </SafeAreaView>
   );
@@ -81,12 +75,8 @@ export const GroupList = ({ navigation }: GroupListProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    paddingTop: 0,
   },
-  fab: {
-    position: "absolute",
-    margin: 16,
-    right: 0,
-    bottom: 0,
-  },
+  flatList: {
+  }
 });

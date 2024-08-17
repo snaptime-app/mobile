@@ -2,10 +2,17 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
 import { useRoute } from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "@/app/main/home/layout";
 
-export const GroupDetail = () => {
-  const route = useRoute();
-  const { groupId } = route.params as { groupId: string };
+type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
+
+type GroupDetailProps = {
+  route: GroupDetailRouteProp;
+};
+
+export const GroupDetail = ({ route }: GroupDetailProps) => {
+  const { groupId } = route.params;
 
   return (
     <View style={styles.container}>
