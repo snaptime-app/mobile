@@ -1,13 +1,21 @@
+import { useAuthenticatedUser } from "@/lib/query/user";
 import { setSession } from "@/lib/utils/session";
 import { View, StyleSheet } from "react-native";
 import { Button, Card, Text } from "react-native-paper";
 
 export function Profile() {
+  const { isSuccess, data } = useAuthenticatedUser();
+  let username = "Loading...";
+
+  if (isSuccess) {
+    username = data.username;
+  }
+
   return (
     <View style={styles.container}>
       <Card>
         <Card.Title
-          title="Username"
+          title={`Hey, ${username}!`}
         />
         <Card.Actions>
           <Button>Settings</Button>

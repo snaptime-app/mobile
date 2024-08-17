@@ -1,9 +1,9 @@
-import { useUserCreateMutation } from "@/lib/query/user";
+import { useUserCreate } from "@/lib/query/user";
 import { generateUser, getSession, setSession } from "@/lib/utils/session";
 import { useEffect } from "react";
 
 export function useInitSession() {
-  const { mutate, isSuccess: isInitialized } = useUserCreateMutation();
+  const { mutate, isSuccess: isInitialized } = useUserCreate();
 
   useEffect(() => {
     getSession().then((s) => {
