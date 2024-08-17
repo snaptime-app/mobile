@@ -33,9 +33,6 @@ export const HomeNavigator = () => (
     <Stack.Screen
       name="GroupDetail"
       component={GroupDetail}
-      options={{
-        title: "Group {groupId}",
-      }}
     />
     <Stack.Screen
       name="AddFriend"
