@@ -6,7 +6,7 @@ import { useTheme } from "react-native-paper";
 
 type PhotoCardProps = {
   username: string;
-  postedTime: string;
+  postedTime: Date;
   imageUrl: string;
   onPress: () => void;
 };
@@ -32,7 +32,7 @@ export const PhotoCard = ({
     >
       <Card.Title
         title={username}
-        subtitle={postedTime} 
+        subtitle={postedTime.toString()} 
         titleVariant="headlineSmall"/>
       <Card.Cover source={{ uri: imageUrl }} style={styles.image} />
       <Card.Actions style={styles.footer}>

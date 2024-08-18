@@ -7,7 +7,9 @@ import { PhotoCard } from "@/components/PhotoCard";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ChallengeData, sampleChallengeData } from "@/app/main/tempconstants";
 import { useTheme } from "react-native-paper";
-import { useGroupDetail } from "@/lib/query/group";
+import { useGroupChallenges, useGroupDetail } from "@/lib/query/group";
+import type { GroupChallenge } from "@/lib/schema/group";
+import { imageKeytoUrl } from "@/lib/utils/image";
 
 type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
 
@@ -21,22 +23,27 @@ const { width: screenWidth } = Dimensions.get("window");
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
-  const { isSuccess, data } = useGroupDetail(groupId);
-
-  if (!isSuccess) {
-    return null;
-  }
+  const { isSuccess: isGroupDetailGetSuccessful, data: group } = useGroupDetail(groupId);
+  const { isSuccess: isGroupChallengesGetSuccessful, data: challenges } = useGroupChallenges(groupId);
 
   useEffect(() => {
-    if (isSuccess) {
-      console.log(data.name)
+    console.log("GroupDetail", isGroupDetailGetSuccessful, group);
+    if (isGroupDetailGetSuccessful) {
+      console.log("GroupDetail", group);
+      console.log(group.name)
       navigation.setOptions({
-        title: data.name,
+        title: group.name,
       });
     }
-  }, [isSuccess, data, navigation]);
+  }, [isGroupDetailGetSuccessful, group, navigation]);
 
-  const renderItem = ({ item }: { item: ChallengeData }) => {
+  console.log("GroupDetail", groupId);
+  if (!isGroupDetailGetSuccessful || !isGroupChallengesGetSuccessful) {
+    return null;
+  }
+  console.log("success")
+
+  const renderItem = ({ item }: { item: GroupChallenge }) => {
     const onPress = () => {
       navigation.push("AttemptPage", { challengeId: item.id });
     };
@@ -44,8 +51,8 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
     return (
       <PhotoCard
         username={item.author}
-        postedTime={item.updatedAt}
-        imageUrl={item.url}
+        postedTime={item.createdAt}
+        imageUrl={imageKeytoUrl(item.correctImage)}
         onPress={onPress}
       />
     );
@@ -70,7 +77,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
       <View style={styles.separatorLine} />
 
       <FlatList
-        data={sampleChallengeData}
+        data={challenges}
         renderItem={renderItem}
         contentContainerStyle={styles.list}
         ItemSeparatorComponent={ItemSeparatorComponent}
