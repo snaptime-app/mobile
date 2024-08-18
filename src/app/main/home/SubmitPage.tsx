@@ -4,11 +4,13 @@ import { Camera, CameraCaptureEventHandler } from "@/components/Camera";
 
 type TakeProps = StackScreenProps<RootStackParamList, "SubmitPage">;
 
-export function SubmitPage({ navigation }: TakeProps) {
+export function SubmitPage({ route, navigation }: TakeProps) {
+  const { challengeId } = route.params;
+
   return (
     <Camera
       onCapture={() => {
-        navigation.navigate("SubmitSend");
+        navigation.replace("SubmitCheck", { challengeId });
       }}
     />
   );
