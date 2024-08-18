@@ -19,10 +19,12 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
   const { mutate } = useCreateSubmission();
   const [result, setResult] = useState<SubmissionCreateResponse | null>(null);
   const theme = useTheme();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("key", key);
     if (!key) return;
+    setImageUrl(imageKeytoUrl(key));
     mutate(
       { challengeid: challengeId, imagekey: key },
       {
@@ -35,9 +37,9 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
     
   }, [mutate, challengeId, key]);
 
-  // if (!key) {
-  //   return null;
-  // }
+  if (!imageUrl) {
+    return null;
+  }
 
   let card: {
     isComplete: boolean;
@@ -79,7 +81,7 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={imageKeytoUrl(key)} />
+        <Image style={styles.image} source={imageUrl} />
         <View style={styles.imageOverlay}>
           <Card
             style={[styles.card, { backgroundColor: card.backgroundColor }]}
