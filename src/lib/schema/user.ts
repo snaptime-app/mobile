@@ -10,6 +10,13 @@ export type User = z.infer<typeof User>;
 export const UserCreatePayload = User.omit({ id: true });
 export type UserCreatePayload = z.infer<typeof UserCreatePayload>;
 
+export const newUserName = z.object({
+  newUsername: z.string(),
+})
+
+export const UserUpdatePayload = newUserName;
+export type UserUpdatePayload = z.infer<typeof UserUpdatePayload>;
+
 export const GroupMembership = z.object({
   userId: z.number(),
   points: z.number(),
