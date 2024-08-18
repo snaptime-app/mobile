@@ -1,5 +1,6 @@
 import { useUserCreate } from "@/lib/query/user";
-import { generateUser, getSession, setSession } from "@/lib/utils/session";
+import { getSession, setSession } from "@/lib/utils/session";
+import { randomUser } from "@/lib/utils/random";
 import { useEffect, useState } from "react";
 
 export function useInitSession() {
@@ -12,7 +13,7 @@ export function useInitSession() {
         setIsInitialized(true);
         return;
       }
-      const newUser = generateUser();
+      const newUser = randomUser();
       mutate(newUser, {
         onSettled(data, error) {
           if (error) {
