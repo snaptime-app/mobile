@@ -75,8 +75,10 @@ export const AddFriend = ({ route }: AddFriendProps) => {
   const renderItem = ({ item }: { item: string }) => {
     const onPress = () => {
       mutate({ username: item, id: groupId });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
+      setFilteredUsers(filteredUsers.filter((user) => user !== item));
+      setAllFriends(allFriends.filter((user) => user !== item));
       console.log("Added to group:", item);
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     };
 
     return (
