@@ -10,7 +10,7 @@ export function SubmitPage({ route, navigation }: TakeProps) {
 
   return (
     <Camera
-      onCapture={() => {
+      onUpload={() => {
         navigation.dispatch(
           CommonActions.reset({
             index: 0,

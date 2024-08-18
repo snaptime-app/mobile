@@ -10,6 +10,8 @@ import { imageKeytoUrl } from "@/lib/utils/image";
 import type { ChallengeAttemptResponse } from "@/lib/schema/challenges";
 import type { SubmissionCreateResponse } from "@/lib/schema/submission";
 import { CommonActions } from "@react-navigation/native";
+import { useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 type SubmitCheckProps = StackScreenProps<RootStackParamList, "SubmitCheck">;
 
@@ -21,23 +23,33 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
   const theme = useTheme();
 
   useEffect(() => {
-    console.log("key", key);
     if (!key) return;
     mutate(
       { challengeid: challengeId, imagekey: key },
       {
         onSuccess: (result) => {
           setResult(result);
-          resetContext();
+        },
+        onError: (error) => {
+          console.error(error);
         },
       },
     );
-    
   }, [mutate, challengeId, key]);
 
-  // if (!key) {
-  //   return null;
-  // }
+  useFocusEffect(
+    useCallback(() => {
+
+      return () => {
+        resetContext();
+        console.log("Screen is being navigated away from");
+      };
+    }, []),
+  );
+
+  if (!key) {
+    return null;
+  }
 
   let card: {
     isComplete: boolean;
@@ -78,7 +90,8 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.imageContainer}>
+      {key && 
+      <><View style={styles.imageContainer}>
         <Image style={styles.image} source={imageKeytoUrl(key)} />
         <View style={styles.imageOverlay}>
           <Card
@@ -120,7 +133,7 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
             ) : null}
           </Card>
         </View>
-      </View>
+      </View></>}
     </View>
   );
 }
