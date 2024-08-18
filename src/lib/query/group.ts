@@ -13,7 +13,7 @@ export function useGroupCreate() {
 
   return useMutation({
     mutationFn: async (payload: GroupCreatePayload) => {
-      const group = await post("/group/create", {json: payload});
+      const group = await post("/group/create", { json: payload });
       return GroupCreateResponse.parse(group);
     },
     onSuccess: () => {
@@ -47,9 +47,20 @@ export function useAuthenticatedUserGroups() {
 
 export function useGroupDetail(groupId: number) {
   return useQuery({
-    queryKey: ["group", groupId],
+    queryKey: ["groupDetail", groupId],
     queryFn: async () => {
       const group = await get(`/group/${groupId}`);
+      return GroupDetailResponse.parse(group);
+    },
+    retry: false,
+  });
+}
+
+export function useGroupChallenges(groupId: number) {
+  return useQuery({
+    queryKey: ["groupChallneges", groupId],
+    queryFn: async () => {
+      const group = await get(`/getchallenges/${groupId}`);
       return GroupDetailResponse.parse(group);
     },
     retry: false,

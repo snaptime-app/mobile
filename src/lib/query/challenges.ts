@@ -10,7 +10,8 @@ export function useChallengeCreate() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (body: ChallengeCreatePayload) => {
-      const challenge = await post("/challenge/create", body);
+      const challenge = await post("/challenge/create", { json: body });
+      console.log(challenge);
       return ChallengeCreateResponse.parse(challenge);
     },
     onSuccess: () => {

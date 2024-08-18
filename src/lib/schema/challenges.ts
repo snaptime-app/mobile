@@ -18,5 +18,12 @@ export const ChallengeCreatePayload = z.object({
 
 export type ChallengeCreatePayload = z.infer<typeof ChallengeCreatePayload>;
 
-export const ChallengeCreateResponse = Challenge;
+export const ChallengeCreateResponse = z.object({
+  authorId: z.number(),
+  correctImage: z.string(),
+  createdAt: z.coerce.date(),
+  groupId: z.number(),
+  id: z.number(),
+  updatedAt: z.coerce.date(),
+});
 export type ChallengeCreateResponse = z.infer<typeof ChallengeCreateResponse>;

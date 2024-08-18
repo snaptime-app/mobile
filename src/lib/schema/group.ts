@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Challenge } from "./challenges";
 
 export const Group = z.object({
   id: z.number(),
@@ -25,3 +26,6 @@ export type GroupListResponse = z.infer<typeof GroupListResponse>;
 
 export const GroupDetailResponse = Group;
 export type GroupDetailResponse = z.infer<typeof GroupDetailResponse>;
+
+export const GroupChallengesResponse = z.array(Challenge);
+export type GroupChallengesResponse = z.infer<typeof GroupChallengesResponse>;

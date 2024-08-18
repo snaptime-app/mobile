@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
@@ -16,12 +16,25 @@ type GroupDetailProps = {
   navigation: StackNavigationProp<RootStackParamList, "GroupList">;
 };
 
-const {width: screenWidth} = Dimensions.get("window");
+const { width: screenWidth } = Dimensions.get("window");
 
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
   const { isSuccess, data } = useGroupDetail(groupId);
+
+  if (!isSuccess) {
+    return null;
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(data.name)
+      navigation.setOptions({
+        title: data.name,
+      });
+    }
+  }, [isSuccess, data, navigation]);
 
   const renderItem = ({ item }: { item: ChallengeData }) => {
     const onPress = () => {
@@ -47,8 +60,8 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, {backgroundColor:colors.primary}]}>
-        <Text style={[styles.headerText, {color: colors.onPrimary}]}>
+      <View style={[styles.header, { backgroundColor: colors.primary }]}>
+        <Text style={[styles.headerText, { color: colors.onPrimary }]}>
           Top Scorer: {topScorer.name} - {topScorer.points} Points
         </Text>
       </View>
