@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { get, post } from "@/lib/utils/request";
 import { User, UserCreatePayload, UserAllResponse, UserUpdatePayload } from "@/lib/schema/user";
 
@@ -23,11 +23,15 @@ export function useUserCreate() {
 }
 
 export function useUserUpdate() {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (payload: UserUpdatePayload) => {
       await post("/user/update", { json: payload });
     },
     retry: false,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["authenticatedUser"] });
+    },
   });
 }
 
