@@ -15,26 +15,34 @@ import {
 import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import themes from '../../material-theme.json';
 
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
   reactNavigationLight: NavigationDefaultTheme,
   reactNavigationDark: NavigationDarkTheme,
 });
 
+const lightThemeFromJson = themes.schemes.light;
+const darkThemeFromJson = themes.schemes.dark;
+
+// Ensure your JSON colors are correctly merging
 const CombinedDefaultTheme = {
   ...MD3LightTheme,
   ...LightTheme,
   colors: {
     ...MD3LightTheme.colors,
     ...LightTheme.colors,
+    ...lightThemeFromJson,
   },
 };
+
 const CombinedDarkTheme = {
   ...MD3DarkTheme,
   ...DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
     ...DarkTheme.colors,
+    ...darkThemeFromJson,
   },
 };
 
@@ -44,7 +52,9 @@ function RootLayout() {
   const colorScheme = useColorScheme();
   
   const theme =
-    colorScheme === "dark" ? CombinedDarkTheme : CombinedDefaultTheme;
+    colorScheme === "dark"
+      ? { ...CombinedDarkTheme }
+      : { ...CombinedDefaultTheme };
 
   return (
     <NavigationContainer theme={theme}>
