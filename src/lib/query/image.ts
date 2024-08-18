@@ -2,25 +2,24 @@ import { useMutation } from "@tanstack/react-query";
 import { post } from "../utils/request";
 import { ImageUploadResponse } from "@/lib/schema/image";
 
+interface ImageUploadProps {
+  uri: string;
+  mime: string;
+  filename?: string;
+}
+
 export function useImageUpload() {
   return useMutation({
-    mutationFn: async (uri: string) => {
-      const blob = await (await fetch(uri)).blob();
+    mutationFn: async ({ uri, mime, filename }: ImageUploadProps) => {
       let formData = new FormData();
+      // @ts-expect-error: React Native's fetch differs from web's fetch
       formData.append("imageUpload", {
-        name: "image.jpg",
-        type: "image/jpeg",
-        uri,
+        uri: uri,
+        type: mime,
+        name: filename ?? "blob",
       });
 
-      // const response = await post("/image/upload", { form: formData });
-      const response = await (
-        await fetch("http://192.168.1.134:5000/api/image/upload", {
-          method: "POST",
-          body: formData,
-        })
-      );
-      console.log(response);
+      const response = await post("/image/upload", { form: formData });
       return ImageUploadResponse.parse(response).key;
     },
     onError: (error) => {

@@ -100,7 +100,9 @@ export function Camera({
       return;
     }
 
-    const captured = await camera.current.takePictureAsync();
+    const captured = await camera.current.takePictureAsync({
+      imageType: "png",
+    });
     if (!captured) {
       return;
     }
@@ -120,7 +122,7 @@ export function Camera({
     await onCaptureFromContext(picture);
     await onCaptureFromProps?.(picture);
 
-    upload(picture.uri, {
+    upload({ uri: picture.uri, mime: "image/png", filename: "image.png" }, {
       async onSuccess(key) {
         await onUploadFromContext(key);
         await onUploadFromProps?.(key);
