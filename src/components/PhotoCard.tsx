@@ -9,6 +9,7 @@ type PhotoCardProps = {
   postedTime: Date;
   imageUrl: string;
   onPress: () => void;
+  isComplete: boolean;
 };
 
 const { width: screenWidth } = Dimensions.get("window");
@@ -18,6 +19,7 @@ export const PhotoCard = ({
   postedTime,
   imageUrl,
   onPress,
+  isComplete
 }: PhotoCardProps) => {
   const { colors } = useTheme();
   return (
@@ -37,7 +39,7 @@ export const PhotoCard = ({
       <Card.Cover source={{ uri: imageUrl }} style={styles.image} />
       <Card.Actions style={styles.footer}>
         <Button mode="contained" style={[styles.button, {backgroundColor: colors.primary}]} onPress={onPress}>
-          <Text style={{color:colors.onPrimary}}>Attempt</Text>
+          {isComplete ? null : <Text style={{color:colors.onPrimary}}>Attempt</Text>}
         </Button>
       </Card.Actions>
     </Card>

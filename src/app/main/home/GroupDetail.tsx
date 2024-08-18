@@ -54,6 +54,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
         postedTime={item.createdAt}
         imageUrl={imageKeytoUrl(item.correctImage)}
         onPress={onPress}
+        isComplete={item.completed}
       />
     );
   };
