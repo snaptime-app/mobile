@@ -24,7 +24,6 @@ export function Send({ navigation }: TakeProps) {
   }
 
   function send(groupid: number) {
-    console.log("send", groupid, key);
     if (!key) {
       return;
     }
@@ -33,7 +32,6 @@ export function Send({ navigation }: TakeProps) {
       { groupid, imagekey: key },
       {
         onSuccess: () => {
-          console.log("success");
           // @ts-expect-error
           navigation.navigate("Home", {
             screen: "GroupDetail",
@@ -46,8 +44,6 @@ export function Send({ navigation }: TakeProps) {
       },
     );
   }
-
-  console.log(data);
 
   return (
     <View style={styles.container}>

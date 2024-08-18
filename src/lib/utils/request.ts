@@ -25,7 +25,6 @@ export async function request(args: RequestArgs) {
   } else if (args.json) {
     body = JSON.stringify(args.json);
   }
-  console.log(url);
 
   const options: RequestInit = {
     method: args.method,
@@ -36,9 +35,6 @@ export async function request(args: RequestArgs) {
     body,
     ...args.fetchOptions,
   };
-
-  console.log("options", options);
-  console.log("url", url);
 
   const response = await fetch(url, options);
   if (!response.ok) {

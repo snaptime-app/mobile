@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { imageKeytoUrl } from "@/lib/utils/image";
 import type { ChallengeAttemptResponse } from "@/lib/schema/challenges";
 import type { SubmissionCreateResponse } from "@/lib/schema/submission";
+import { CommonActions } from "@react-navigation/native";
 
 type SubmitCheckProps = StackScreenProps<RootStackParamList, "SubmitCheck">;
 
@@ -93,9 +94,18 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
                   style={{ alignSelf: "flex-end" }}
                   onPress={() => {
                     if (result) {
-                      navigation.navigate("GroupDetail", {
-                        groupId: result.challenge.groupId,
-                      });
+                      navigation.dispatch(
+                        CommonActions.reset({
+                          index: 1,
+                          routes: [
+                            { name: "GroupList" },
+                            {
+                              name: "GroupDetail",
+                              params: { groupId: result.challenge.groupId },
+                            },
+                          ],
+                        }),
+                      );
                     } else {
                       navigation.navigate("GroupList");
                     }

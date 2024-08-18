@@ -8,7 +8,6 @@ export function useCreateSubmission() {
   return useMutation({
     mutationFn: async (body: SubmissionCreatePayload) => {
       const challenge = await post("/submission/create", { json: body });
-      console.log("createsub", challenge);
       return SubmissionCreateResponse.parse(challenge);
     },
     onSuccess: ({ challengeId }) => {

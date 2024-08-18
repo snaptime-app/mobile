@@ -13,8 +13,9 @@ import {
   type CameraCapturedPicture,
 } from "expo-camera";
 import { Image } from "expo-image";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useImageUpload } from "@/lib/query/image";
+import { useFocusEffect } from "@react-navigation/native";
 
 export { CameraCapturedPicture };
 export type CameraCaptureEventHandler = (
@@ -27,6 +28,7 @@ interface CameraContextProps {
   key: string | null;
   onCapture: CameraCaptureEventHandler;
   onUpload: CameraUploadEventHandler;
+  resetContext: () => void;
 }
 const CameraContext = createContext<CameraContextProps | null>(null);
 
@@ -58,6 +60,10 @@ export function CameraProvider({
           setUploadKey(key);
           onUpload?.(key);
         },
+        resetContext: () => {
+          setCapturedPicture(null);
+          setUploadKey(null);
+        },
       }}
     >
       {children}
@@ -82,8 +88,11 @@ export function Camera({
   onCapture: onCaptureFromProps,
   onUpload: onUploadFromProps,
 }: CameraProps) {
-  const { onCapture: onCaptureFromContext, onUpload: onUploadFromContext } =
-    useCamera();
+  const {
+    onCapture: onCaptureFromContext,
+    onUpload: onUploadFromContext,
+    resetContext,
+  } = useCamera();
   const theme = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const [picture, setPicture] = useState<CameraCapturedPicture | null>(null);
@@ -122,12 +131,17 @@ export function Camera({
     await onCaptureFromContext(picture);
     await onCaptureFromProps?.(picture);
 
-    upload({ uri: picture.uri, mime: "image/png", filename: "image.png" }, {
-      async onSuccess(key) {
-        await onUploadFromContext(key);
-        await onUploadFromProps?.(key);
+    upload(
+      { uri: picture.uri, mime: "image/png", filename: "image.png" },
+      {
+        async onSuccess(key) {
+          setPicture(null);
+          resetContext();
+          await onUploadFromContext(key);
+          await onUploadFromProps?.(key);
+        },
       },
-    });
+    );
   }
 
   return (

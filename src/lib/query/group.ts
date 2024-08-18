@@ -51,7 +51,6 @@ export function useGroupDetail(groupId: number) {
     queryKey: ["groupDetail", groupId],
     queryFn: async () => {
       const group = await get(`/group/groupdetails/${groupId}`);
-      console.log("hellohihi", group);
       return GroupDetailResponse.parse(group);
     },
     retry: false,
@@ -63,8 +62,9 @@ export function useGroupChallenges(groupId: number) {
     queryKey: ["groupChallenges", groupId],
     queryFn: async () => {
       const group = await get(`/group/getchallenges/${groupId}`);
-      console.log("yeet", group);
-      return GroupChallengesResponse.parse(group);
+      const challenges = GroupChallengesResponse.parse(group);
+      challenges.reverse();
+      return challenges;
     },
     retry: false,
   });

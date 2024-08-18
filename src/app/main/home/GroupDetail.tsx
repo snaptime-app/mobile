@@ -24,26 +24,28 @@ const { width: screenWidth } = Dimensions.get("window");
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
-  const { isSuccess: isDetailGetSuccessful, data: group } = useGroupDetail(groupId);
-  const { isSuccess: isChallengesGetSuccessful, data: challenges } = useGroupChallenges(groupId);
-  const { isSuccess: isMembersGetSuccessful, data: members } = useGroupMembers(groupId);
+  const { isSuccess: isDetailGetSuccessful, data: group } =
+    useGroupDetail(groupId);
+  const { isSuccess: isChallengesGetSuccessful, data: challenges } =
+    useGroupChallenges(groupId);
+  const { isSuccess: isMembersGetSuccessful, data: members } =
+    useGroupMembers(groupId);
 
   useEffect(() => {
-    console.log("GroupDetail", isDetailGetSuccessful, group);
     if (isDetailGetSuccessful) {
-      console.log("GroupDetail", group);
-      console.log(group.name)
       navigation.setOptions({
-        title: group.name,
+        headerTitle: group.name,
       });
     }
   }, [isDetailGetSuccessful, group, navigation]);
 
-  console.log("GroupDetail", groupId);
-  if (!isDetailGetSuccessful || !isChallengesGetSuccessful || !isMembersGetSuccessful) {
+  if (
+    !isDetailGetSuccessful ||
+    !isChallengesGetSuccessful ||
+    !isMembersGetSuccessful
+  ) {
     return null;
   }
-  console.log("success")
 
   const renderItem = ({ item }: { item: GroupChallenge }) => {
     const onPress = () => {

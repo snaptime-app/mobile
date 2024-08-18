@@ -14,7 +14,6 @@ export function useChallengeCreate() {
   return useMutation({
     mutationFn: async (body: ChallengeCreatePayload) => {
       const challenge = await post("/challenge/create", { json: body });
-      console.log(challenge);
       return ChallengeCreateResponse.parse(challenge);
     },
     onSuccess: ({ groupId }) => {
@@ -29,7 +28,6 @@ export function useChallenge(challengeId: number) {
     queryKey: ["challenge", challengeId],
     queryFn: async () => {
       const response = await get(`/challenge/${challengeId}`);
-      console.log("womp", response);
       return ChallengeDetailResponse.parse(response);
     },
     retry: false,
@@ -41,7 +39,6 @@ export function useAttemptChallenge() {
   return useMutation({
     mutationFn: async (payload: ChallengeAttemptPayload) => {
       const response = await post(`/submission/create`);
-      console.log("attempt", response);
       return ChallengeAttemptResponse.parse(response);
     },
     onSuccess: ({ id }) => {
