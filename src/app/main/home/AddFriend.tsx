@@ -101,7 +101,7 @@ export const AddFriend = ({ route }: AddFriendProps) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isSuccess && userIsSuccess ? (
         <>
           <TextInput
@@ -117,7 +117,7 @@ export const AddFriend = ({ route }: AddFriendProps) => {
           />
         </>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

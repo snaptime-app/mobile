@@ -54,6 +54,7 @@ export const GroupList = ({ navigation }: GroupListProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
   const { mutate } = useGroupCreate();
+  const theme = useTheme();
 
   if (isError) {
     return <Text>Error: {error.message}</Text>;
@@ -111,7 +112,9 @@ export const GroupList = ({ navigation }: GroupListProps) => {
           <Dialog.Title>New Group</Dialog.Title>
           <Dialog.Content>
             <TextInput
+              mode="outlined"
               label="New Group Name"
+              style={{backgroundColor: "transparent"}}
               value={newGroupName}
               onChangeText={setNewGroupName}
             />

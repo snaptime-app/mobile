@@ -30,7 +30,7 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   }
 
   const renderItem = ({ item }: { item: Submission }) => (
-    <Card>
+    <View>
       <List.Item
         title={item.creator.username}
         right={() => (
@@ -52,7 +52,7 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
         )}
         style={{ width: screenWidth * 0.8 }}
       />
-    </Card>
+    </View>
   );
   const ItemSeparatorComponent = () => <View style={styles.separator} />;
 
