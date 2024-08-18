@@ -49,7 +49,7 @@ export const HomeNavigator = () => (
           title: "New Group",
         }}
       />
-      <Stack.Screen name="GroupDetail" component={GroupDetail} />
+      <Stack.Screen name="GroupDetail" component={GroupDetail} options={{title:""}}/>
       <Stack.Screen
         name="AddFriend"
         component={AddFriend}

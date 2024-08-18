@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
@@ -24,26 +24,37 @@ const { width: screenWidth } = Dimensions.get("window");
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
-  const { isSuccess: isDetailGetSuccessful, data: group } = useGroupDetail(groupId);
-  const { isSuccess: isChallengesGetSuccessful, data: challenges } = useGroupChallenges(groupId);
-  const { isSuccess: isMembersGetSuccessful, data: members } = useGroupMembers(groupId);
+  const { isSuccess: isDetailGetSuccessful, data: group } =
+    useGroupDetail(groupId);
+  const { isSuccess: isChallengesGetSuccessful, data: challenges } =
+    useGroupChallenges(groupId);
+  const { isSuccess: isMembersGetSuccessful, data: members } =
+    useGroupMembers(groupId);
+  const [titleRendered, setTitleRendered] = useState(false);
 
   useEffect(() => {
     console.log("GroupDetail", isDetailGetSuccessful, group);
     if (isDetailGetSuccessful) {
       console.log("GroupDetail", group);
-      console.log(group.name)
+      console.log(group.name);
       navigation.setOptions({
         title: group.name,
       });
+      setTitleRendered(true);
     }
   }, [isDetailGetSuccessful, group, navigation]);
-
-  console.log("GroupDetail", groupId);
-  if (!isDetailGetSuccessful || !isChallengesGetSuccessful || !isMembersGetSuccessful) {
+  if (!titleRendered) {
     return null;
   }
-  console.log("success")
+  console.log("GroupDetail", groupId);
+  if (
+    !isDetailGetSuccessful ||
+    !isChallengesGetSuccessful ||
+    !isMembersGetSuccessful
+  ) {
+    return null;
+  }
+  console.log("success");
 
   const renderItem = ({ item }: { item: GroupChallenge }) => {
     const onPress = () => {
@@ -67,22 +78,26 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: colors.primary }]}>
-        <Text style={[styles.headerText, { color: colors.onPrimary }]}>
-          Top Scorer: {topScorer.username} - {topScorer.points} Points
-        </Text>
-      </View>
+      {titleRendered ? (
+        <>
+          <View style={[styles.header, { backgroundColor: colors.primary }]}>
+            <Text style={[styles.headerText, { color: colors.onPrimary }]}>
+              Top Scorer: {topScorer.username} - {topScorer.points} Points
+            </Text>
+          </View>
 
-      {/* Separator */}
-      <View style={styles.separatorLine} />
+          {/* Separator */}
+          <View style={styles.separatorLine} />
 
-      <FlatList
-        data={challenges}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        showsVerticalScrollIndicator={true}
-      />
+          <FlatList
+            data={challenges}
+            renderItem={renderItem}
+            contentContainerStyle={styles.list}
+            ItemSeparatorComponent={ItemSeparatorComponent}
+            showsVerticalScrollIndicator={true}
+          />
+        </>
+      ) : null}
     </View>
   );
 };
