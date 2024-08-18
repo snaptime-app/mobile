@@ -2,42 +2,57 @@ import React from "react";
 import { FlatList, StyleSheet, Dimensions } from "react-native";
 import { Card, Text, Title, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useGroupMembers } from "@/lib/query/groupMembers";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "@/app/main/home/layout";
 
 type User = {
-  id: number;
-  name: string;
+  user_id: number;
+  username: string;
   points: number;
 };
 
-const sampleUsers: User[] = [
-  { id: 1, name: "NotJeffery", points: 7 },
-  { id: 2, name: "Bob", points: 2 },
-  { id: 3, name: "Penguin", points: 1 },
-  { id: 4, name: "Bun", points: 0 },
-];
-
 const { width: screenWidth } = Dimensions.get("window");
+type LeaderboardRouteProp = RouteProp<RootStackParamList, "Leaderboard">;
 
-export const Leaderboard = () => {
+type LeaderboardProps = {
+  route: LeaderboardRouteProp;
+};
+export const Leaderboard = ({ route }: LeaderboardProps) => {
+  const { groupId } = route.params;
   const { colors } = useTheme();
+  const { isSuccess, isError, data, error } = useGroupMembers(groupId);
+  if (isError) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   const currentWeek = "Week 1";
 
   const renderItem = ({ item }: { item: User }) => (
-    <Card style={[styles.card, {backgroundColor: colors.primary}]}>
+    <Card style={[styles.card, { backgroundColor: colors.primary }]}>
       <Card.Content style={styles.cardContent}>
-        <Title style={{color: colors.onPrimary}}>{item.name}</Title>
-        <Text style={[styles.pointsText, {color: colors.onPrimary}]}>{item.points} Points</Text>
+        <Title style={{ color: colors.onPrimary }}>{item.username}</Title>
+        <Text style={[styles.pointsText, { color: colors.onPrimary }]}>
+          {item.points} Points
+        </Text>
       </Card.Content>
     </Card>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={[styles.weekText, { color: colors.primary }]}>
-        {currentWeek}
-      </Text>
-      <FlatList data={sampleUsers} renderItem={renderItem} style={{width: screenWidth * 0.9}} />
+      {isSuccess ? (
+        <>
+          <Text style={[styles.weekText, { color: colors.primary }]}>
+            {currentWeek}
+          </Text>
+          <FlatList
+            data={data}
+            renderItem={renderItem}
+            style={{ width: screenWidth * 0.9 }}
+          />
+        </>
+      ) : null}
     </SafeAreaView>
   );
 };

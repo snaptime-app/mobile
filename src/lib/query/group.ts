@@ -26,7 +26,7 @@ export function useGroupCreate() {
 export function useGroupAddUser() {
   return useMutation({
     mutationFn: async ({ id, username }: GroupUpdatePayload) => {
-      await post(`/group/update/${id}`, {
+      await post(`/group/${id}/adduser`, {
         json: { username },
       });
     },

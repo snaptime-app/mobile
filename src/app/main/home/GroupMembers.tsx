@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, FlatList, ListRenderItem } from "react-native";
 import { List, Card, Text } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "@/app/main/home/layout";
+import { useGroupMembers } from "@/lib/query/groupMembers";
 
 type Member = {
-  id: number;
-  name: string;
+  user_id: number;
+  username: string;
+  points: number;
 };
 
 type GroupMembersListRouteProp = RouteProp<RootStackParamList, "Members">;
@@ -15,29 +17,29 @@ type GroupMembersListProps = {
   route: GroupMembersListRouteProp;
 };
 
-// eventually get from server
-const members: Member[] = [
-  { id: 1, name: "NotJeffery" },
-];
-
 export const GroupMembersList = ({ route }: GroupMembersListProps) => {
   const { groupId } = route.params;
+  const { isSuccess, isError, data, error } = useGroupMembers(groupId);
 
-  const renderItem: ListRenderItem<Member> = ({ item }) => (
-    <Card style={styles.card}>
-        <List.Item
-            title={item.name}
-        />
-    </Card>
-  );
+  if (isError) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  const renderItem: ListRenderItem<Member> = ({ item }) => {
+    return (
+      <Card style={styles.card}>
+        <List.Item title={item.username} />
+      </Card>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={members}
-        renderItem={renderItem}
-      />
-      <Text >Selected Group ID: {groupId}</Text>
+      {isSuccess ? (
+        <>
+          <FlatList data={data} renderItem={renderItem} />
+        </>
+      ) : null}
     </View>
   );
 };

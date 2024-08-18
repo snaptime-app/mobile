@@ -38,6 +38,7 @@ export async function request(args: RequestArgs) {
   };
 
   console.log("options", options);
+  console.log("url", url);
 
   const response = await fetch(url, options);
   if (!response.ok) {

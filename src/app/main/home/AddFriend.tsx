@@ -1,61 +1,88 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TextInput, List, Card, IconButton } from "react-native-paper";
+import { TextInput, List, Card, IconButton, Text } from "react-native-paper";
 import { FlatList } from "react-native";
+import { useUserAll } from "@/lib/query/user";
+import { UserWithMembership } from "@/lib/schema/user";
+import { RouteProp } from "@react-navigation/native";
+import { RootStackParamList } from "@/app/main/home/layout";
+import { useAuthenticatedUser } from "@/lib/query/user";
+import { useGroupAddUser } from "@/lib/query/group";
+import { useQueryClient } from "@tanstack/react-query";
 
-type User = {
-  id: number;
-  name: string;
+type AddFriendRouteProp = RouteProp<RootStackParamList, "AddFriend">;
+
+type AddFriendProps = {
+  route: AddFriendRouteProp;
 };
 
-// eventually get from server
-const allFriends: User[] = [
-  { id: 1, name: "NotJeffery" },
-  { id: 2, name: "Fan" },
-  { id: 3, name: "Panda" },
-  { id: 4, name: "Bun" },
-];
+export const AddFriend = ({ route }: AddFriendProps) => {
+  const { groupId } = route.params;
+  console.log("Group ID:", groupId);
 
-type Member = {
-  id: number;
-  name: string;
-};
+  const {
+    isSuccess: userIsSuccess,
+    data: userData,
+    isError: isUserError,
+    error: userError,
+  } = useAuthenticatedUser();
 
-//eventually get from server
-const members: Member[] = [{ id: 1, name: "NotJeffery" }];
-
-export const AddFriend = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const friends = allFriends.filter(
-    (friend) => !members.some((member) => member.id === friend.id),
-  );
+  const { isSuccess, isError, data, error } = useUserAll();
+  const [allFriends, setAllFriends] = useState<string[]>([]);
 
-  const [filteredUsers, setFilteredUsers] = useState<User[]>(friends);
+  const { mutate } = useGroupAddUser();
+  const [filteredUsers, setFilteredUsers] = useState<string[]>([]);
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    if (isSuccess && userIsSuccess) {
+      console.log("Data:", data);
+      const filteredFriends = data
+        .filter((user: UserWithMembership) => {
+          const hasMatchingGroup = user.GroupMembership.some(
+            (membership) => membership.groupId === groupId,
+          );
+          return user.username !== userData.username && !hasMatchingGroup;
+        })
+        .map((user) => user.username);
+      setAllFriends(filteredFriends);
+      setFilteredUsers(filteredFriends);
+    }
+  }, [isSuccess, userIsSuccess]);
+
+  if (isError) {
+    return <Text>Original Error: {error.message}</Text>;
+  }
+  if (isUserError) {
+    return <Text>User Error: {userError.message}</Text>;
+  }
+
 
   const onChangeSearch = (query: string) => {
     setSearchQuery(query);
     if (query) {
       setFilteredUsers(
-        friends.filter((user) =>
-          user.name.toLowerCase().includes(query.toLowerCase()),
+        allFriends.filter((user) =>
+          user.toLowerCase().includes(query.toLowerCase()),
         ),
       );
     } else {
-      setFilteredUsers(friends);
+      setFilteredUsers(allFriends);
     }
   };
 
-  const renderItem = ({ item }: { item: User }) => {
+  const renderItem = ({ item }: { item: string }) => {
     const onPress = () => {
-      // SERVER CALL TO ADD USER TO GROUP
-      console.log("Added to group:", item.name);
+      mutate({ username: item, id: groupId });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      console.log("Added to group:", item);
     };
 
     return (
       <Card style={styles.card}>
         <List.Item
-          title={item.name}
+          title={item}
           right={() => (
             <View style={styles.iconContainer}>
               <IconButton
@@ -73,17 +100,21 @@ export const AddFriend = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TextInput
-        label="Search Users"
-        value={searchQuery}
-        onChangeText={onChangeSearch}
-        style={styles.searchBar}
-      />
-      <FlatList
-        data={filteredUsers}
-        renderItem={renderItem}
-        style={styles.list}
-      />
+      {isSuccess && userIsSuccess ? (
+        <>
+          <TextInput
+            label="Search Users"
+            value={searchQuery}
+            onChangeText={onChangeSearch}
+            style={styles.searchBar}
+          />
+          <FlatList
+            data={filteredUsers}
+            renderItem={renderItem}
+            style={styles.list}
+          />
+        </>
+      ) : null}
     </SafeAreaView>
   );
 };

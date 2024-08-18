@@ -36,7 +36,7 @@ export function HeaderBar({
           />
           <Appbar.Action
             onPress={() => {
-              navigation.push('AddFriend');
+              navigation.push('AddFriend', { groupId });
             }}
             icon="account-plus"
           />

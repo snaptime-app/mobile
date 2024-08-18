@@ -9,3 +9,19 @@ export type User = z.infer<typeof User>;
 
 export const UserCreatePayload = User.omit({ id: true });
 export type UserCreatePayload = z.infer<typeof UserCreatePayload>;
+
+export const GroupMembership = z.object({
+  userId: z.number(),
+  points: z.number(),
+  groupId: z.number(),
+});
+
+export const UserWithMembership = z.object({
+  username: z.string(),
+  GroupMembership: z.array(GroupMembership),
+});
+
+export type UserWithMembership = z.infer<typeof UserWithMembership>;
+
+export const UserAllResponse = z.array(UserWithMembership);
+export type UserAllResponse = z.infer<typeof UserWithMembership>;
