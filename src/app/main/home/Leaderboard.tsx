@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from "react";
-import { FlatList, StyleSheet, Dimensions } from "react-native";
+import { FlatList, StyleSheet, Dimensions, View } from "react-native";
 import { Card, Text, Title, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGroupMembers } from "@/lib/query/groupMembers";
@@ -70,7 +70,7 @@ export const Leaderboard = ({ route }: LeaderboardProps) => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {isSuccess ? (
         <>
           <Text style={[styles.weekText, { color: colors.primary }]}>
@@ -83,17 +83,16 @@ export const Leaderboard = ({ route }: LeaderboardProps) => {
           />
         </>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
     alignItems: "center",
   },
   weekText: {
+    marginTop: 16,
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,

@@ -5,7 +5,6 @@ import { HeaderBar } from "@/components/HeaderBar";
 import { AddFriend } from "@/app/main/home/AddFriend";
 import { GroupMembersList } from "@/app/main/home/GroupMembers";
 import { AttemptPage } from "@/app/main/home/AttemptPage";
-import { GroupNew } from "./GroupNew";
 import { Leaderboard } from "@/app/main/home/Leaderboard";
 import { SubmitPage } from "@/app/main/home/SubmitPage";
 import { SubmitCheck } from "@/app/main/home/SubmitCheck";
@@ -13,7 +12,6 @@ import { CameraProvider } from "@/components/Camera";
 
 export type RootStackParamList = {
   GroupList: undefined;
-  GroupNew: undefined;
   GroupDetail: { groupId: number };
   AddFriend: { groupId: number };
   Members: { groupId: number };
@@ -40,13 +38,6 @@ export const HomeNavigator = () => (
         component={GroupList}
         options={{
           title: "Groups",
-        }}
-      />
-      <Stack.Screen
-        name="GroupNew"
-        component={GroupNew}
-        options={{
-          title: "New Group",
         }}
       />
       <Stack.Screen name="GroupDetail" component={GroupDetail} options={{title:""}}/>

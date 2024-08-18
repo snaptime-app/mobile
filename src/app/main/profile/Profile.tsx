@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useAuthenticatedUser, useUserUpdate } from "@/lib/query/user";
 import { setSession } from "@/lib/utils/session";
 import { View, StyleSheet } from "react-native";
-import { Button, Card, Text, Dialog, Portal, TextInput } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Text,
+  Dialog,
+  Portal,
+  TextInput,
+} from "react-native-paper";
 
 export function Profile() {
   const { isSuccess, data } = useAuthenticatedUser();
@@ -10,7 +17,7 @@ export function Profile() {
 
   // State for modal visibility and new username input
   const [visible, setVisible] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
+  const [newUsername, setNewUsername] = useState("");
 
   // Handle modal visibility
   const showModal = () => setVisible(true);
@@ -20,7 +27,7 @@ export function Profile() {
   const handleChangeName = () => {
     if (newUsername.trim()) {
       mutate({ newUsername });
-      setNewUsername(''); // Clear input field
+      setNewUsername(""); // Clear input field
       hideModal(); // Close modal
     }
   };
@@ -32,11 +39,10 @@ export function Profile() {
 
   return (
     <View style={styles.container}>
-      <Card>
-        <Card.Title title={greeting} />
+      <Card mode="contained" style={styles.card}>
+        <Card.Title title={greeting} titleVariant="titleLarge" />
         <Card.Actions>
           <Button onPress={showModal}>Change Name</Button>
-          <Button onPress={() => setSession(null)}>Sign Out</Button>
         </Card.Actions>
       </Card>
 
@@ -64,5 +70,9 @@ export function Profile() {
 const styles = StyleSheet.create({
   container: {
     margin: 30,
+  },
+  card: {
+    padding: 10,
+    borderRadius: 20,
   },
 });

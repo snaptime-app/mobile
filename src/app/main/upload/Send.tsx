@@ -2,7 +2,14 @@ import { StackScreenProps } from "@react-navigation/stack";
 import type { StackParamList } from "./layout";
 import { ScrollView, StyleSheet, FlatList, View } from "react-native";
 import { useCamera } from "@/components/Camera";
-import { Button, List, Text, useTheme } from "react-native-paper";
+import {
+  Button,
+  Card,
+  Divider,
+  List,
+  Text,
+  useTheme,
+} from "react-native-paper";
 import React, { useEffect } from "react";
 import { useAuthenticatedUserGroups } from "@/lib/query/group";
 import { useChallengeCreate } from "@/lib/query/challenges";
@@ -32,6 +39,7 @@ export function Send({ navigation }: TakeProps) {
       { groupid, imagekey: key },
       {
         onSuccess: () => {
+          navigation.popToTop();
           // @ts-expect-error
           navigation.navigate("Home", {
             screen: "GroupDetail",
@@ -46,8 +54,8 @@ export function Send({ navigation }: TakeProps) {
   }
 
   return (
-    <View style={styles.container}>
-      <List.Section
+    <ScrollView style={styles.container}>
+      <View
         style={[
           styles.listContainer,
           {
@@ -55,10 +63,21 @@ export function Send({ navigation }: TakeProps) {
           },
         ]}
       >
-        <List.Subheader>Choose a group to send to!</List.Subheader>
-        <View style={styles.list}>
+        <Text style={styles.title} variant="headlineSmall">
+          Choose a Group
+        </Text>
+        <View
+          style={[
+            styles.list,
+            {
+              backgroundColor: theme.colors.outline, 
+              borderColor: theme.colors.outline,
+             },
+          ]}
+        >
           <FlatList
             data={data}
+            contentContainerStyle={styles.listContentContainer}
             renderItem={(info) => (
               <List.Item
                 style={[
@@ -72,8 +91,8 @@ export function Send({ navigation }: TakeProps) {
             )}
           />
         </View>
-      </List.Section>
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -85,13 +104,19 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
   },
+  title: {
+    margin: 25,
+    marginBottom: 0,
+  },
   list: {
-    // flex: 1,
-    // margin: 10,
-    // borderRadius: 20,
-    // overflow: "hidden",
-    // justifyContent: "flex-start",
-    // gap: 30,
+    margin: 20,
+    borderRadius: 20,
+    overflow: "hidden",
+    borderWidth: 1,
+  },
+  listContentContainer: {
+    justifyContent: "space-between",
+    gap: 1,
   },
   item: {},
 });

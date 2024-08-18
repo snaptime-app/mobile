@@ -16,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useChallenge } from "@/lib/query/challenges";
 import { imageKeytoUrl } from "@/lib/utils/image";
 import type { Submission } from "@/lib/schema/submission";
+import { PhotoCard } from "@/components/PhotoCard";
 
 type AttemptPageProps = StackScreenProps<RootStackParamList, "AttemptPage">;
 
@@ -56,20 +57,13 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   const ItemSeparatorComponent = () => <View style={styles.separator} />;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Card
-        style={[styles.card, { backgroundColor: colors.primaryContainer }]}
-        mode="contained"
-      >
-        <Card.Content>
-          <Title>{data.author.username}</Title>
-          <Caption>{data.createdAt.toString()}</Caption>
-        </Card.Content>
-        <Card.Cover
-          source={{ uri: imageKeytoUrl(data.correctImage) }}
-          style={{ borderRadius: 0 }}
-        />
-      </Card>
+    <View style={styles.container}>
+      <PhotoCard
+        username={data.author.username}
+        postedTime={data.createdAt}
+        imageUrl={imageKeytoUrl(data.correctImage)}
+        isComplete={!isAttemptable}
+      />
       <FlatList
         data={data.submissions}
         renderItem={renderItem}
@@ -86,7 +80,7 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
           onPress={() => navigation.push("SubmitPage", { challengeId })}
         />
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 };
 

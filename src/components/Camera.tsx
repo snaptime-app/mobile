@@ -15,7 +15,7 @@ import {
 import { Image } from "expo-image";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useImageUpload } from "@/lib/query/image";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 export { CameraCapturedPicture };
 export type CameraCaptureEventHandler = (
@@ -99,6 +99,7 @@ export function Camera({
   const [isCameraReady, setIsCameraReady] = useState(false);
   const camera = useRef<CameraView>(null);
   const { isPending, mutate: upload } = useImageUpload();
+  const isFocused = useIsFocused();
 
   if (!permission) {
     return null;
@@ -158,26 +159,28 @@ export function Camera({
         {permission.granted ? (
           <>
             {!picture ? (
-              <CameraView
-                style={styles.camera}
-                onCameraReady={() => setIsCameraReady(true)}
-                ref={camera}
-                facing="back"
-                animateShutter={false}
-                autofocus="on"
-                flash="off"
-                videoStabilizationMode="standard"
-              >
-                <View style={styles.fabBar}>
-                  <FAB
-                    style={styles.fab}
-                    onPress={takePicture}
-                    icon="camera-outline"
-                    key="camera"
-                    mode="flat"
-                  />
-                </View>
-              </CameraView>
+              isFocused ? (
+                <CameraView
+                  style={styles.camera}
+                  onCameraReady={() => setIsCameraReady(true)}
+                  ref={camera}
+                  facing="back"
+                  animateShutter={false}
+                  autofocus="on"
+                  flash="off"
+                  videoStabilizationMode="standard"
+                >
+                  <View style={styles.fabBar}>
+                    <FAB
+                      style={styles.fab}
+                      onPress={takePicture}
+                      icon="camera-outline"
+                      key="camera"
+                      mode="flat"
+                    />
+                  </View>
+                </CameraView>
+              ) : null
             ) : (
               <>
                 <Image style={styles.image} source={picture.uri}></Image>

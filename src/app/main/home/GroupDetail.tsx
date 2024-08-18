@@ -88,20 +88,22 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
     <View style={styles.container}>
       {titleRendered ? (
         <View style={styles.innerContainer}>
-          <View style={[styles.header, { backgroundColor: colors.primary }]}>
-            <Text style={[styles.headerText, { color: colors.onPrimary }]}>
-              Top Scorer: {topScorer.username} - {topScorer.points} Points
-            </Text>
-          </View>
+          <>
+            <View style={[styles.header, { backgroundColor: colors.primary }]}>
+              <Text style={[styles.headerText, { color: colors.onPrimary }]}>
+                {topScorer.points > 0
+                  ? `Top Scorer: ${topScorer.username} - ${topScorer.points} Points`
+                  : "No Top Scorer Yet"}
+              </Text>
+            </View>
 
-          {/* Separator */}
-          <View style={styles.separatorLine} />
+            <View style={styles.separatorLine} />
+          </>
 
           <FlatList
             data={challenges}
             renderItem={renderItem}
             contentContainerStyle={styles.list}
-            ItemSeparatorComponent={ItemSeparatorComponent}
             showsVerticalScrollIndicator={true}
           />
         </View>
@@ -112,12 +114,12 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
   },
   innerContainer: {
-    flex: 1,
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
@@ -127,6 +129,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: 10,
     width: "95%",
+    borderRadius: 10,
   },
   headerText: {
     fontSize: 16,
@@ -138,6 +141,8 @@ const styles = StyleSheet.create({
   },
   list: {
     justifyContent: "center",
+    gap: 16,
+    paddingBottom: 16,
   },
   separator: {
     height: 10, // Space between cards
