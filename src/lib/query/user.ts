@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { get, post } from "@/lib/utils/request";
-import { User, UserCreatePayload, UserAllResponse } from "@/lib/schema/user";
+import { User, UserCreatePayload, UserAllResponse, UserUpdatePayload } from "@/lib/schema/user";
 
 export function useAuthenticatedUser() {
   return useQuery({
@@ -17,6 +17,15 @@ export function useUserCreate() {
   return useMutation({
     mutationFn: async (payload: UserCreatePayload) => {
       await post("/user/create", { json: payload });
+    },
+    retry: false,
+  });
+}
+
+export function useUserUpdate() {
+  return useMutation({
+    mutationFn: async (payload: UserUpdatePayload) => {
+      await post("/user/update", { json: payload });
     },
     retry: false,
   });
