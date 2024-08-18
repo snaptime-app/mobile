@@ -7,6 +7,7 @@ import { PhotoCard } from "@/components/PhotoCard";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { ChallengeData, sampleChallengeData } from "@/app/main/tempconstants";
 import { useTheme } from "react-native-paper";
+import { useGroupDetail } from "@/lib/query/group";
 
 type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
 
@@ -20,6 +21,7 @@ const {width: screenWidth} = Dimensions.get("window");
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
+  const { isSuccess, data } = useGroupDetail(groupId);
 
   const renderItem = ({ item }: { item: ChallengeData }) => {
     const onPress = () => {

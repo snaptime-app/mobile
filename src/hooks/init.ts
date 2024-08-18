@@ -1,13 +1,18 @@
 import { useUserCreate } from "@/lib/query/user";
 import { generateUser, getSession, setSession } from "@/lib/utils/session";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function useInitSession() {
-  const { mutate, isSuccess: isInitialized } = useUserCreate();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const { mutate, isSuccess } = useUserCreate();
 
   useEffect(() => {
+    console.log("useInitSession");
     getSession().then((s) => {
-      if (s) return;
+      if (s) {
+        setIsInitialized(true);
+        return;
+      }
       const newUser = generateUser();
       console.log("payload", newUser);
       mutate(newUser, {
@@ -19,7 +24,10 @@ export function useInitSession() {
             console.log("User created", data);
           }
         },
-        onSuccess: async () => await setSession(newUser.session),
+        onSuccess: async () => {
+          await setSession(newUser.session);
+          setIsInitialized(true);
+        },
       });
     });
   }, []);

@@ -15,8 +15,8 @@ export function useAuthenticatedUser() {
 
 export function useUserCreate() {
   return useMutation({
-    mutationFn: async (body: UserCreatePayload) => {
-      await post("/user/create", body);
+    mutationFn: async (payload: UserCreatePayload) => {
+      await post("/user/create", {json: payload});
     },
     retry: false,
   });

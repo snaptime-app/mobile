@@ -1,5 +1,11 @@
 import { View } from "react-native";
-import { Text, Button, FAB, useTheme } from "react-native-paper";
+import {
+  Text,
+  Button,
+  FAB,
+  useTheme,
+  ActivityIndicator,
+} from "react-native-paper";
 import { StyleSheet } from "react-native";
 import {
   CameraView,
@@ -8,34 +14,49 @@ import {
 } from "expo-camera";
 import { Image } from "expo-image";
 import { createContext, useContext, useRef, useState } from "react";
+import { useImageUpload } from "@/lib/query/image";
 
 export { CameraCapturedPicture };
-export type CameraEventHandler = (picture: CameraCapturedPicture) => void;
+export type CameraCaptureEventHandler = (
+  picture: CameraCapturedPicture,
+) => void;
+export type CameraUploadEventHandler = (key: string) => void;
 
 interface CameraContextProps {
   captured: CameraCapturedPicture | null;
-  onCapture: CameraEventHandler;
+  key: string | null;
+  onCapture: CameraCaptureEventHandler;
+  onUpload: CameraUploadEventHandler;
 }
 const CameraContext = createContext<CameraContextProps | null>(null);
 
 interface CameraProviderProps {
   children: React.ReactNode;
-  onCapture?: CameraEventHandler;
+  onCapture?: CameraCaptureEventHandler;
+  onUpload?: CameraUploadEventHandler;
 }
 
-export function CameraProvider({ children, onCapture }: CameraProviderProps) {
+export function CameraProvider({
+  children,
+  onCapture,
+  onUpload,
+}: CameraProviderProps) {
   const [capturedPicture, setCapturedPicture] =
     useState<CameraCapturedPicture | null>(null);
+  const [uploadKey, setUploadKey] = useState<string | null>(null);
 
   return (
     <CameraContext.Provider
       value={{
         captured: capturedPicture,
+        key: uploadKey,
         onCapture: (picture: CameraCapturedPicture) => {
           setCapturedPicture(picture);
-          if (onCapture) {
-            onCapture(picture);
-          }
+          onCapture?.(picture);
+        },
+        onUpload: (key: string) => {
+          setUploadKey(key);
+          onUpload?.(key);
         },
       }}
     >
@@ -54,15 +75,21 @@ export function useCamera() {
 }
 
 interface CameraProps {
-  onCapture?: CameraEventHandler;
+  onCapture?: CameraCaptureEventHandler;
+  onUpload?: CameraUploadEventHandler;
 }
-export function Camera({ onCapture: onCaptureFromProp }: CameraProps) {
-  const { onCapture: onCaptureFromContext } = useCamera();
+export function Camera({
+  onCapture: onCaptureFromProps,
+  onUpload: onUploadFromProps,
+}: CameraProps) {
+  const { onCapture: onCaptureFromContext, onUpload: onUploadFromContext } =
+    useCamera();
   const theme = useTheme();
   const [permission, requestPermission] = useCameraPermissions();
   const [picture, setPicture] = useState<CameraCapturedPicture | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const camera = useRef<CameraView>(null);
+  const { isPending, mutate: upload } = useImageUpload();
 
   if (!permission) {
     return null;
@@ -86,12 +113,19 @@ export function Camera({ onCapture: onCaptureFromProp }: CameraProps) {
   }
 
   async function confirmPicture() {
-    if (picture) {
-      onCaptureFromContext(picture);
-      if (onCaptureFromProp) {
-        onCaptureFromProp(picture);
-      }
+    if (!picture) {
+      return;
     }
+
+    await onCaptureFromContext(picture);
+    await onCaptureFromProps?.(picture);
+
+    upload(picture.uri, {
+      async onSuccess(key) {
+        await onUploadFromContext(key);
+        await onUploadFromProps?.(key);
+      },
+    });
   }
 
   return (
@@ -132,22 +166,28 @@ export function Camera({ onCapture: onCaptureFromProp }: CameraProps) {
               <>
                 <Image style={styles.image} source={picture.uri}></Image>
                 <View style={styles.imageOverlay}>
-                  <View style={styles.fabBar}>
-                    <FAB
-                      style={styles.fab}
-                      onPress={confirmPicture}
-                      icon="check"
-                      key="check"
-                      mode="flat"
-                    />
-                    <FAB
-                      style={styles.fab}
-                      onPress={resetPicture}
-                      icon="close"
-                      key="close"
-                      mode="flat"
-                    />
-                  </View>
+                  {!isPending ? (
+                    <View style={styles.fabBar}>
+                      <FAB
+                        style={styles.fab}
+                        onPress={confirmPicture}
+                        icon="check"
+                        key="check"
+                        mode="flat"
+                      />
+                      <FAB
+                        style={styles.fab}
+                        onPress={resetPicture}
+                        icon="close"
+                        key="close"
+                        mode="flat"
+                      />
+                    </View>
+                  ) : (
+                    <View style={styles.activity}>
+                      <ActivityIndicator animating={true} size="large" />
+                    </View>
+                  )}
                 </View>
               </>
             )}
@@ -203,6 +243,11 @@ const styles = StyleSheet.create({
   fab: {
     flexShrink: 1,
     margin: 16,
+  },
+  activity: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   permission: {
     flexShrink: 1,

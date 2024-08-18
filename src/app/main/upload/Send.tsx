@@ -8,16 +8,15 @@ import { useEffect } from "react";
 type TakeProps = StackScreenProps<StackParamList, "Send">;
 
 export function Send({ navigation }: TakeProps) {
-  const { captured } = useCamera();
-  if (!captured) {
+  const { key } = useCamera();
+  if (!key) {
     navigation.navigate("Take");
     return null;
   }
 
-
   return (
     <View>
-      <Text>{captured.uri}</Text>
+      <Text>{key}</Text>
       <Button
         onPress={() => {
           navigation.navigate("Take");

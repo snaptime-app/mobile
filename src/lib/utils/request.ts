@@ -1,25 +1,40 @@
 import { getSession } from "./session";
 
-type Body = object | string;
+type Json = object | string;
 
 interface RequestArgs {
   method: string;
   path: string;
-  body?: Body;
-  options?: RequestInit;
+  json?: Json;
+  fetchOptions?: RequestInit;
+  form?: FormData;
+}
+
+interface RequestMethodOptions {
+  json?: Json;
+  form?: FormData;
+  fetchOptions?: RequestInit;
 }
 
 export async function request(args: RequestArgs) {
   const session = await getSession();
   const url = `${process.env.EXPO_PUBLIC_SERVER_URL}${args.path}`;
+  let body: FormData | string | undefined = undefined;
+  if (args.form) {
+    body = args.form;
+  } else if (args.json) {
+    body = JSON.stringify(args.json);
+  }
+  console.log(url);
+
   const options: RequestInit = {
     method: args.method,
     headers: {
       ...(session ? { Authorization: session } : {}),
-      ...(args.body ? { "Content-Type": "application/json" } : {}),
+      ...(args.json ? { "Content-Type": "application/json" } : {}),
     },
-    body: args.body ? JSON.stringify(args.body) : undefined,
-    ...args.options,
+    body,
+    ...args.fetchOptions,
   };
 
   console.log("options", options);
@@ -38,37 +53,34 @@ export async function request(args: RequestArgs) {
   }
 }
 
-export async function get(path: string, options?: RequestInit) {
+export async function get(path: string, options?: RequestMethodOptions) {
   return request({
     path,
     method: "GET",
-    options,
+    ...options,
   });
 }
 
-export async function post(path: string, body: Body, options?: RequestInit) {
+export async function post(path: string, options?: RequestMethodOptions) {
   return request({
     method: "POST",
     path,
-    body,
-    options,
+    ...options,
   });
 }
 
-export async function put(path: string, body: Body, options: RequestInit = {}) {
+export async function put(path: string, options?: RequestMethodOptions) {
   return request({
     method: "PUT",
     path,
-    body,
-    options,
+    ...options,
   });
 }
 
-export async function del(path: string, body: Body, options?: RequestInit) {
+export async function del(path: string, options?: RequestMethodOptions) {
   return request({
     method: "DELETE",
     path,
-    body,
-    options,
+    ...options,
   });
 }

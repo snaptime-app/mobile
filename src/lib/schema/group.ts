@@ -22,3 +22,6 @@ export type GroupUpdatePayload = z.infer<typeof GroupUpdatePayload>;
 
 export const GroupListResponse = z.array(Group);
 export type GroupListResponse = z.infer<typeof GroupListResponse>;
+
+export const GroupDetailResponse = Group;
+export type GroupDetailResponse = z.infer<typeof GroupDetailResponse>;

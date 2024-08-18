@@ -9,7 +9,7 @@ const Tab = createMaterialBottomTabNavigator();
 export function MainLayout() {
   const isInitialized = useInitSession();
 
-  // if (!isInitialized) return null;
+  if (!isInitialized) return null;
 
   return (
     <Tab.Navigator>
