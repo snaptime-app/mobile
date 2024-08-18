@@ -92,7 +92,13 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
                   labelStyle={{ color: card.textColor }}
                   style={{ alignSelf: "flex-end" }}
                   onPress={() => {
-                    navigation.navigate("GroupDetail", { groupId: 1 });
+                    if (result) {
+                      navigation.navigate("GroupDetail", {
+                        groupId: result.challenge.groupId,
+                      });
+                    } else {
+                      navigation.navigate("GroupList");
+                    }
                   }}
                 >
                   {card.actionText}

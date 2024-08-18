@@ -29,7 +29,7 @@ export function useChallenge(challengeId: number) {
     queryKey: ["challenge", challengeId],
     queryFn: async () => {
       const response = await get(`/challenge/${challengeId}`);
-      console.log("yeet", response);
+      console.log("womp", response);
       return ChallengeDetailResponse.parse(response);
     },
     retry: false,

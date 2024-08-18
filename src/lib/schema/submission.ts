@@ -3,7 +3,14 @@ import { User } from "./user";
 import { Challenge } from "./challenges";
 
 export const Submission = z.object({
+  attemptedImage: z.string(),
+  createdAt: z.string(),
   challengeId: z.number(),
+  challenge: Challenge,
+  creatorId: z.number(),
+  creator: User,
+  id: z.number(),
+  isCorrect: z.boolean(),
 });
 export type Submission = z.infer<typeof Submission>;
 

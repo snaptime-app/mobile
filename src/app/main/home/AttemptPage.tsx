@@ -9,63 +9,15 @@ import {
   Caption,
   FAB,
 } from "react-native-paper";
-import { RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "@/app/main/home/layout";
-import { ChallengeData, sampleChallengeData } from "@/app/main/tempconstants";
 import { useTheme } from "react-native-paper";
-import { StackNavigationProp } from "@react-navigation/stack";
+import type { StackScreenProps } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useChallenge } from "@/lib/query/challenges";
 import { imageKeytoUrl } from "@/lib/utils/image";
+import type { Submission } from "@/lib/schema/submission";
 
-type User = {
-  id: number;
-  username: string;
-};
-
-type Challenge = {
-  id: number;
-  description: string;
-};
-
-type Submission = {
-  id: number;
-  isCorrect: boolean;
-  challenge: Challenge;
-  createdAt: string;
-  creator: User;
-};
-
-const submissionData: Submission[] = [
-  {
-    id: 1,
-    isCorrect: true,
-    challenge: { id: 101, description: "Challenge 1" },
-    createdAt: "4 hours ago",
-    creator: { id: 1, username: "NotJeffery (You)" },
-  },
-  {
-    id: 2,
-    isCorrect: false,
-    challenge: { id: 102, description: "Challenge 2" },
-    createdAt: "2 hours ago",
-    creator: { id: 2, username: "Bun" },
-  },
-  {
-    id: 3,
-    isCorrect: true,
-    challenge: { id: 103, description: "Challenge 3" },
-    createdAt: "1 hour ago",
-    creator: { id: 3, username: "Goose2" },
-  },
-];
-
-type AttemptPageProp = RouteProp<RootStackParamList, "AttemptPage">;
-
-type AttemptPageProps = {
-  route: AttemptPageProp;
-  navigation: StackNavigationProp<RootStackParamList, "GroupList">;
-};
+type AttemptPageProps = StackScreenProps<RootStackParamList, "AttemptPage">;
 
 export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   const { colors } = useTheme();
@@ -75,8 +27,6 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   if (!isSuccess) {
     return null
   }
-
-  let cardData = undefined;
 
   const renderItem = ({ item }: { item: Submission }) => (
     <Card>
@@ -121,7 +71,7 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
         />
       </Card>
       <FlatList
-        data={submissionData}
+        data={data.submissions}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         ItemSeparatorComponent={ItemSeparatorComponent}
@@ -131,6 +81,7 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
         style={styles.fab}
         icon="play"
         label="Attempt"
+        mode="flat"
         onPress={() => navigation.push("SubmitPage", { challengeId })}
       />
     </SafeAreaView>
