@@ -8,7 +8,7 @@ import { AttemptPage } from "@/app/main/home/AttemptPage";
 import { GroupNew } from "./GroupNew";
 import { Leaderboard } from "@/app/main/home/Leaderboard";
 import { SubmitPage } from "@/app/main/home/SubmitPage";
-import { SubmitSend } from "@/app/main/home/SubmitSend";
+import { SubmitCheck } from "@/app/main/home/SubmitCheck";
 import { CameraProvider } from "@/components/Camera";
 
 export type RootStackParamList = {
@@ -20,7 +20,7 @@ export type RootStackParamList = {
   AttemptPage: { challengeId: number };
   Leaderboard: { groupId: number };
   SubmitPage: { challengeId: number };
-  SubmitSend: undefined;
+  SubmitCheck: { challengeId: number };
   // Profile: { userId: string };
   // Feed: { sort: 'latest' | 'top' } | undefined;
 };
@@ -86,10 +86,10 @@ export const HomeNavigator = () => (
         }}
       />
       <Stack.Screen
-        name="SubmitSend"
-        component={SubmitSend}
+        name="SubmitCheck"
+        component={SubmitCheck}
         options={{
-          title: "Send Submission",
+          title: "Check Submission",
         }}
       />
     </Stack.Navigator>

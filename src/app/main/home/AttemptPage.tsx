@@ -15,6 +15,8 @@ import { ChallengeData, sampleChallengeData } from "@/app/main/tempconstants";
 import { useTheme } from "react-native-paper";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useChallenge } from "@/lib/query/challenges";
+import { imageKeytoUrl } from "@/lib/utils/image";
 
 type User = {
   id: number;
@@ -68,7 +70,13 @@ type AttemptPageProps = {
 export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   const { colors } = useTheme();
   const { challengeId } = route.params;
-  const cardData = sampleChallengeData.find((data) => data.id === challengeId);
+  const { isSuccess, data } = useChallenge(challengeId)
+
+  if (!isSuccess) {
+    return null
+  }
+
+  let cardData = undefined;
 
   const renderItem = ({ item }: { item: Submission }) => (
     <Card>
@@ -104,11 +112,11 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
         mode="contained"
       >
         <Card.Content>
-          <Title>{cardData?.author}</Title>
-          <Caption>{cardData?.updatedAt}</Caption>
+          <Title>{data.author.username}</Title>
+          <Caption>{data.createdAt.toString()}</Caption>
         </Card.Content>
         <Card.Cover
-          source={{ uri: cardData?.url }}
+          source={{ uri: imageKeytoUrl(data.correctImage) }}
           style={{ borderRadius: 0 }}
         />
       </Card>

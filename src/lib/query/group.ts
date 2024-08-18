@@ -60,7 +60,7 @@ export function useGroupDetail(groupId: number) {
 
 export function useGroupChallenges(groupId: number) {
   return useQuery({
-    queryKey: ["groupChallneges", groupId],
+    queryKey: ["groupChallenges", groupId],
     queryFn: async () => {
       const group = await get(`/group/getchallenges/${groupId}`);
       console.log("yeet", group);

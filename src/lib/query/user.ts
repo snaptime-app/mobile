@@ -4,7 +4,7 @@ import { User, UserCreatePayload } from "@/lib/schema/user";
 
 export function useAuthenticatedUser() {
   return useQuery({
-    queryKey: ["user"],
+    queryKey: ["authenticatedUser"],
     queryFn: async () => {
       const user = await get("/user/get");
       return User.parse(user);
