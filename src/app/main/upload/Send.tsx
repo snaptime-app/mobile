@@ -54,7 +54,7 @@ export function Send({ navigation }: TakeProps) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={[
           styles.listContainer,
@@ -92,7 +92,7 @@ export function Send({ navigation }: TakeProps) {
           />
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 

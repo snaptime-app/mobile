@@ -43,6 +43,7 @@ export function Profile() {
         <Card.Title title={greeting} titleVariant="titleLarge" />
         <Card.Actions>
           <Button onPress={showModal}>Change Name</Button>
+          <Button onPress={() => setSession(null)}>Sign Out</Button>
         </Card.Actions>
       </Card>
 
