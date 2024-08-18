@@ -61,7 +61,6 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   
 
   const renderItem = ({ item }: { item: GroupChallenge }) => {
-    console.log(item.author, userData.username === item.author);
     const isCompleted = (userData.username === item.author || item.completed);
     const onPress = () => {
       navigation.push("AttemptPage", { challengeId: item.id, isAttemptable: !isCompleted });
@@ -85,7 +84,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   return (
     <View style={styles.container}>
       {titleRendered ? (
-        <>
+        <View style={styles.innerContainer}>
           <View style={[styles.header, { backgroundColor: colors.primary }]}>
             <Text style={[styles.headerText, { color: colors.onPrimary }]}>
               Top Scorer: {topScorer.username} - {topScorer.points} Points
@@ -102,7 +101,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
             ItemSeparatorComponent={ItemSeparatorComponent}
             showsVerticalScrollIndicator={true}
           />
-        </>
+        </View>
       ) : null}
     </View>
   );
@@ -112,6 +111,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+  },
+  innerContainer: {
+    flex:1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   header: {
@@ -129,7 +134,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   list: {
-    flexGrow: 1,
     justifyContent: "center",
   },
   separator: {
