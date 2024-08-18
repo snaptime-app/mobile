@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { get, post } from "@/lib/utils/request";
 import {
+  GroupChallengesResponse,
   GroupCreateResponse,
   GroupDetailResponse,
   GroupListResponse,
@@ -13,7 +14,7 @@ export function useGroupCreate() {
 
   return useMutation({
     mutationFn: async (payload: GroupCreatePayload) => {
-      const group = await post("/group/create", {json: payload});
+      const group = await post("/group/create", { json: payload });
       return GroupCreateResponse.parse(group);
     },
     onSuccess: () => {
@@ -47,10 +48,23 @@ export function useAuthenticatedUserGroups() {
 
 export function useGroupDetail(groupId: number) {
   return useQuery({
-    queryKey: ["group", groupId],
+    queryKey: ["groupDetail", groupId],
     queryFn: async () => {
-      const group = await get(`/group/${groupId}`);
+      const group = await get(`/group/groupdetails/${groupId}`);
+      console.log("hellohihi", group);
       return GroupDetailResponse.parse(group);
+    },
+    retry: false,
+  });
+}
+
+export function useGroupChallenges(groupId: number) {
+  return useQuery({
+    queryKey: ["groupChallneges", groupId],
+    queryFn: async () => {
+      const group = await get(`/group/getchallenges/${groupId}`);
+      console.log("yeet", group);
+      return GroupChallengesResponse.parse(group);
     },
     retry: false,
   });
