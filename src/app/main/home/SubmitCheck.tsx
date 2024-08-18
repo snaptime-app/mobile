@@ -21,9 +21,11 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
   const { mutate } = useCreateSubmission();
   const [result, setResult] = useState<SubmissionCreateResponse | null>(null);
   const theme = useTheme();
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!key) return;
+    setImageUrl(imageKeytoUrl(key));
     mutate(
       { challengeid: challengeId, imagekey: key },
       {
@@ -39,7 +41,6 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
 
   useFocusEffect(
     useCallback(() => {
-
       return () => {
         resetContext();
         console.log("Screen is being navigated away from");
@@ -90,8 +91,7 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
 
   return (
     <View style={styles.container}>
-      {key && 
-      <><View style={styles.imageContainer}>
+      <View style={styles.imageContainer}>
         <Image style={styles.image} source={imageKeytoUrl(key)} />
         <View style={styles.imageOverlay}>
           <Card
@@ -133,7 +133,7 @@ export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
             ) : null}
           </Card>
         </View>
-      </View></>}
+      </View>
     </View>
   );
 }
