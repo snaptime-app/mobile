@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import { FlatList, StyleSheet, Dimensions } from "react-native";
 import { Card, Text, Title, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,6 +22,36 @@ export const Leaderboard = ({ route }: LeaderboardProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
   const { isSuccess, isError, data, error } = useGroupMembers(groupId);
+  const [ sortedData, setSortedData ] = useState<User[]>([]);
+  // const data = [
+  //     {
+  //       "user_id": 1,
+  //       "username": "user1",
+  //       "points": 100
+  //     },
+  //     {
+  //       "user_id": 2,
+  //       "username": "user2",
+  //       "points": 200
+  //     },
+  //     {
+  //       "user_id": 3,
+  //       "username": "user3",
+  //       "points": 300
+  //     }
+  // ];
+
+  // const isSuccess = true;
+  // const isError = false;
+  
+  useEffect(() => {
+    if (isSuccess && data) {
+      // Sort the data by points in descending order
+      const sorted = data.slice().sort((a, b) => b.points - a.points);
+      setSortedData(sorted);
+    }
+  }, [isSuccess, data]);
+
   if (isError) {
     return <Text>Error: {error.message}</Text>;
   }
@@ -47,7 +77,7 @@ export const Leaderboard = ({ route }: LeaderboardProps) => {
             {currentWeek}
           </Text>
           <FlatList
-            data={data}
+            data={sortedData}
             renderItem={renderItem}
             style={{ width: screenWidth * 0.9 }}
           />
