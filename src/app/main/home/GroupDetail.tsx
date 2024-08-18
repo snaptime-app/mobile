@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, FlatList, Dimensions } from "react-native";
 import { Text, Card } from "react-native-paper";
 import { RouteProp } from "@react-navigation/native";
@@ -11,6 +11,7 @@ import { useGroupChallenges, useGroupDetail } from "@/lib/query/group";
 import type { GroupChallenge } from "@/lib/schema/group";
 import { imageKeytoUrl } from "@/lib/utils/image";
 import { useGroupMembers } from "@/lib/query/groupMembers";
+import { useAuthenticatedUser } from "@/lib/query/user";
 
 type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
 
@@ -30,26 +31,42 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
     useGroupChallenges(groupId);
   const { isSuccess: isMembersGetSuccessful, data: members } =
     useGroupMembers(groupId);
+  const [titleRendered, setTitleRendered] = useState(false);
+  const { isSuccess: isUserSuccess, data: userData } = useAuthenticatedUser();
 
   useEffect(() => {
     if (isDetailGetSuccessful) {
+      console.log("GroupDetail", group);
+      console.log(group.name);
       navigation.setOptions({
         headerTitle: group.name,
       });
+      setTitleRendered(true);
     }
   }, [isDetailGetSuccessful, group, navigation]);
 
-  if (
-    !isDetailGetSuccessful ||
-    !isChallengesGetSuccessful ||
-    !isMembersGetSuccessful
-  ) {
+  if (!titleRendered) {
     return null;
   }
 
+  console.log("GroupDetail", groupId);
+  if (
+    !isDetailGetSuccessful ||
+    !isChallengesGetSuccessful ||
+    !isMembersGetSuccessful ||
+    !isUserSuccess
+  ) {
+    return null;
+  }
+  console.log("success");
+
   const renderItem = ({ item }: { item: GroupChallenge }) => {
+    const isCompleted = userData.username === item.author || item.completed;
     const onPress = () => {
-      navigation.push("AttemptPage", { challengeId: item.id });
+      navigation.push("AttemptPage", {
+        challengeId: item.id,
+        isAttemptable: !isCompleted,
+      });
     };
 
     return (
@@ -58,7 +75,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
         postedTime={item.createdAt}
         imageUrl={imageKeytoUrl(item.correctImage)}
         onPress={onPress}
-        isComplete={item.completed}
+        isComplete={isCompleted}
       />
     );
   };
@@ -69,22 +86,26 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: colors.primary }]}>
-        <Text style={[styles.headerText, { color: colors.onPrimary }]}>
-          Top Scorer: {topScorer.username} - {topScorer.points} Points
-        </Text>
-      </View>
+      {titleRendered ? (
+        <View style={styles.innerContainer}>
+          <View style={[styles.header, { backgroundColor: colors.primary }]}>
+            <Text style={[styles.headerText, { color: colors.onPrimary }]}>
+              Top Scorer: {topScorer.username} - {topScorer.points} Points
+            </Text>
+          </View>
 
-      {/* Separator */}
-      <View style={styles.separatorLine} />
+          {/* Separator */}
+          <View style={styles.separatorLine} />
 
-      <FlatList
-        data={challenges}
-        renderItem={renderItem}
-        contentContainerStyle={styles.list}
-        ItemSeparatorComponent={ItemSeparatorComponent}
-        showsVerticalScrollIndicator={true}
-      />
+          <FlatList
+            data={challenges}
+            renderItem={renderItem}
+            contentContainerStyle={styles.list}
+            ItemSeparatorComponent={ItemSeparatorComponent}
+            showsVerticalScrollIndicator={true}
+          />
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -93,6 +114,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+  },
+  innerContainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
     alignItems: "center",
   },
   header: {
@@ -110,7 +137,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   list: {
-    flexGrow: 1,
     justifyContent: "center",
   },
   separator: {
