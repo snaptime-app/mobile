@@ -20,6 +20,7 @@ export function useImageUpload() {
       });
 
       const response = await post("/image/upload", { form: formData });
+      console.log("image key", ImageUploadResponse.parse(response).key);
       return ImageUploadResponse.parse(response).key;
     },
     onError: (error) => {

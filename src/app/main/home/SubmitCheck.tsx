@@ -15,26 +15,29 @@ type SubmitCheckProps = StackScreenProps<RootStackParamList, "SubmitCheck">;
 
 export function SubmitCheck({ route, navigation }: SubmitCheckProps) {
   const { challengeId } = route.params;
-  const { key } = useCamera();
+  const { key, resetContext } = useCamera();
   const { mutate } = useCreateSubmission();
   const [result, setResult] = useState<SubmissionCreateResponse | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
+    console.log("key", key);
     if (!key) return;
     mutate(
       { challengeid: challengeId, imagekey: key },
       {
         onSuccess: (result) => {
           setResult(result);
+          resetContext();
         },
       },
     );
+    
   }, [mutate, challengeId, key]);
 
-  if (!key) {
-    return null;
-  }
+  // if (!key) {
+  //   return null;
+  // }
 
   let card: {
     isComplete: boolean;

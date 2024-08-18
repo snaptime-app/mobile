@@ -137,9 +137,9 @@ export function Camera({
       {
         async onSuccess(key) {
           setPicture(null);
-          resetContext();
           await onUploadFromContext(key);
           await onUploadFromProps?.(key);
+          // resetContext();
         },
       },
     );
