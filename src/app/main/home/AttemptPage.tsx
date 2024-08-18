@@ -21,11 +21,11 @@ type AttemptPageProps = StackScreenProps<RootStackParamList, "AttemptPage">;
 
 export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
   const { colors } = useTheme();
-  const { challengeId } = route.params;
-  const { isSuccess, data } = useChallenge(challengeId)
+  const { challengeId, isAttemptable } = route.params;
+  const { isSuccess, data } = useChallenge(challengeId);
 
   if (!isSuccess) {
-    return null
+    return null;
   }
 
   const renderItem = ({ item }: { item: Submission }) => (
@@ -77,13 +77,15 @@ export const AttemptPage = ({ route, navigation }: AttemptPageProps) => {
         ItemSeparatorComponent={ItemSeparatorComponent}
         style={styles.list}
       />
-      <FAB
-        style={styles.fab}
-        icon="play"
-        label="Attempt"
-        mode="flat"
-        onPress={() => navigation.push("SubmitPage", { challengeId })}
-      />
+      {isAttemptable ? (
+        <FAB
+          style={styles.fab}
+          icon="play"
+          label="Attempt"
+          mode="flat"
+          onPress={() => navigation.push("SubmitPage", { challengeId })}
+        />
+      ) : null}
     </SafeAreaView>
   );
 };

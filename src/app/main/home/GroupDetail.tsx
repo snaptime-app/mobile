@@ -11,6 +11,7 @@ import { useGroupChallenges, useGroupDetail } from "@/lib/query/group";
 import type { GroupChallenge } from "@/lib/schema/group";
 import { imageKeytoUrl } from "@/lib/utils/image";
 import { useGroupMembers } from "@/lib/query/groupMembers";
+import { useAuthenticatedUser } from "@/lib/query/user";
 
 type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
 
@@ -31,6 +32,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { isSuccess: isMembersGetSuccessful, data: members } =
     useGroupMembers(groupId);
   const [titleRendered, setTitleRendered] = useState(false);
+  const { isSuccess: isUserSuccess, data: userData } = useAuthenticatedUser();
 
   useEffect(() => {
     console.log("GroupDetail", isDetailGetSuccessful, group);
@@ -50,15 +52,19 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   if (
     !isDetailGetSuccessful ||
     !isChallengesGetSuccessful ||
-    !isMembersGetSuccessful
+    !isMembersGetSuccessful || !isUserSuccess
   ) {
     return null;
   }
   console.log("success");
 
+  
+
   const renderItem = ({ item }: { item: GroupChallenge }) => {
+    console.log(item.author, userData.username === item.author);
+    const isCompleted = (userData.username === item.author || item.completed);
     const onPress = () => {
-      navigation.push("AttemptPage", { challengeId: item.id });
+      navigation.push("AttemptPage", { challengeId: item.id, isAttemptable: !isCompleted });
     };
 
     return (
@@ -67,7 +73,7 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
         postedTime={item.createdAt}
         imageUrl={imageKeytoUrl(item.correctImage)}
         onPress={onPress}
-        isComplete={item.completed}
+        isComplete={isCompleted}
       />
     );
   };

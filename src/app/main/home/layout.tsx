@@ -17,7 +17,7 @@ export type RootStackParamList = {
   GroupDetail: { groupId: number };
   AddFriend: { groupId: number };
   Members: { groupId: number };
-  AttemptPage: { challengeId: number };
+  AttemptPage: { challengeId: number, isAttemptable: boolean };
   Leaderboard: { groupId: number };
   SubmitPage: { challengeId: number };
   SubmitCheck: { challengeId: number };
