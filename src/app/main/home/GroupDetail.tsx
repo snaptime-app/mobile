@@ -10,6 +10,7 @@ import { useTheme } from "react-native-paper";
 import { useGroupChallenges, useGroupDetail } from "@/lib/query/group";
 import type { GroupChallenge } from "@/lib/schema/group";
 import { imageKeytoUrl } from "@/lib/utils/image";
+import { useGroupMembers } from "@/lib/query/groupMembers";
 
 type GroupDetailRouteProp = RouteProp<RootStackParamList, "GroupDetail">;
 
@@ -23,22 +24,23 @@ const { width: screenWidth } = Dimensions.get("window");
 export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
   const { groupId } = route.params;
   const { colors } = useTheme();
-  const { isSuccess: isGroupDetailGetSuccessful, data: group } = useGroupDetail(groupId);
-  const { isSuccess: isGroupChallengesGetSuccessful, data: challenges } = useGroupChallenges(groupId);
+  const { isSuccess: isDetailGetSuccessful, data: group } = useGroupDetail(groupId);
+  const { isSuccess: isChallengesGetSuccessful, data: challenges } = useGroupChallenges(groupId);
+  const { isSuccess: isMembersGetSuccessful, data: members } = useGroupMembers(groupId);
 
   useEffect(() => {
-    console.log("GroupDetail", isGroupDetailGetSuccessful, group);
-    if (isGroupDetailGetSuccessful) {
+    console.log("GroupDetail", isDetailGetSuccessful, group);
+    if (isDetailGetSuccessful) {
       console.log("GroupDetail", group);
       console.log(group.name)
       navigation.setOptions({
         title: group.name,
       });
     }
-  }, [isGroupDetailGetSuccessful, group, navigation]);
+  }, [isDetailGetSuccessful, group, navigation]);
 
   console.log("GroupDetail", groupId);
-  if (!isGroupDetailGetSuccessful || !isGroupChallengesGetSuccessful) {
+  if (!isDetailGetSuccessful || !isChallengesGetSuccessful || !isMembersGetSuccessful) {
     return null;
   }
   console.log("success")
@@ -61,16 +63,13 @@ export const GroupDetail = ({ route, navigation }: GroupDetailProps) => {
 
   const ItemSeparatorComponent = () => <View style={styles.separator} />;
 
-  const topScorer = {
-    name: "NotJeffery",
-    points: 7,
-  };
+  const topScorer = members.sort((a, b) => b.points - a.points)[0];
 
   return (
     <View style={styles.container}>
       <View style={[styles.header, { backgroundColor: colors.primary }]}>
         <Text style={[styles.headerText, { color: colors.onPrimary }]}>
-          Top Scorer: {topScorer.name} - {topScorer.points} Points
+          Top Scorer: {topScorer.username} - {topScorer.points} Points
         </Text>
       </View>
 
